@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Si-An's DISPENSER LAB.</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="studio-floor"></div>
+
+    <div class="main-wrapper" id="mainWrapper" onclick="activateMachine()">
+        
+        <div class="intro-title">
+            <p class="sub-title">UI/UX & INTERACTIVE LAB</p>
+            <h1 class="main-title">
+                DISPENSER<br>
+                <span>LAB.</span>
+            </h1>
+            <div class="slogan-container">
+                <p class="slogan-text">
+                    Shaping <strong>Ideas</strong> into <strong>Design</strong>,<br>
+                    Turning <strong class="neon-blue">Code</strong> into <strong class="neon-pink">Experience</strong>.
+                </p>
+            </div>
+        </div>
+
+        <div class="claw-machine-3d">
+            
+            <div class="cabinet">
+                <div class="face-3d glass front"></div>
+                <div class="face-3d glass back"></div>
+                <div class="face-3d glass left"></div>
+                <div class="face-3d glass right"></div>
+                <div class="face-3d glass top"></div>
+                
+                <div class="claw-container">
+                    <div class="claw" id="claw">
+                        <div class="claw-line"></div>
+                        <div class="claw-body"></div>
+                    </div>
+                </div>
+
+                <div class="cabinet-floor">
+                    <div id="box1" class="cube-wrapper biz" onclick="selectItem(event, 'jaju', this)">
+                        <div class="cube"><div class="face front"><span class="label">JAJU</span></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                    </div>
+                    <div id="box2" class="cube-wrapper biz" onclick="selectItem(event, 'wander', this)">
+                        <div class="cube"><div class="face front"><span class="label">WANDER</span></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                    </div>
+                    <div id="box3" class="cube-wrapper game" onclick="selectItem(event, 'pengcat', this)">
+                        <div class="cube"><div class="face front"><span class="label">PENG</span></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                    </div>
+                    <div id="box4" class="cube-wrapper game" onclick="selectItem(event, 'newgame', this)">
+                        <div class="cube"><div class="face front"><span class="label">DEV</span></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="base">
+                <div class="face-3d metal front"><div class="chute"></div></div>
+                <div class="face-3d metal back"></div>
+                <div class="face-3d metal left"></div>
+                <div class="face-3d metal right"></div>
+                <div class="face-3d metal top">
+                    <div class="joystick"></div>
+                    <div class="btn-group">
+                        <div class="btn-deco"></div>
+                        <div class="btn-deco active-btn"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <h2 id="m-title">Title</h2>
+            <p id="m-desc">Desc</p>
+            <div class="skill-box">
+                <strong>USED SKILLS:</strong><br>
+                <span id="m-skills">Unity, Swift</span>
+            </div>
+            <button class="close-btn" onclick="closeModal()">CLOSE PROJECT</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
