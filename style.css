@@ -25,12 +25,12 @@ body {
     display: flex; justify-content: center; align-items: center;
     transform-style: preserve-3d;
     transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    transform: translateZ(-300px) rotateY(-30deg) translateY(30px);
+    transform: translateZ(-300px) rotateY(-30deg) translateY(50px);
     cursor: pointer;
 }
 
 .main-wrapper.active {
-    transform: translateZ(250px) rotateY(0deg) translateY(-50px);
+    transform: translateZ(400px) rotateY(0deg) translateY(-140px);
     cursor: default;
 }
 
