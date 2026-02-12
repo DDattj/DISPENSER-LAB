@@ -1,0 +1,138 @@
+/* 1. 환경 설정 */
+body {
+    margin: 0; padding: 0; width: 100%; height: 100vh; overflow: hidden;
+    background-color: #050505;
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    perspective: 1200px;
+    background-image: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.1) 0%, transparent 65%);
+    cursor: default;
+}
+
+.studio-floor {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 60%;
+    background: linear-gradient(to bottom, #1a1a1a 0%, #000 100%);
+    background-image: linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 60px 60px;
+    transform-origin: bottom;
+    transform: rotateX(30deg) scale(2.5);
+    z-index: -1;
+    box-shadow: inset 0 50px 150px rgba(0,0,0,1);
+}
+
+/* 2. 메인 래퍼 */
+.main-wrapper {
+    position: relative; width: 100%; height: 100%; 
+    display: flex; justify-content: center; align-items: center;
+    transform-style: preserve-3d;
+    transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform: translateZ(-300px) rotateY(-30deg) translateY(30px);
+    cursor: pointer;
+}
+
+.main-wrapper.active {
+    transform: translateZ(250px) rotateY(0deg) translateY(-50px);
+    cursor: default;
+}
+
+/* 3. 타이틀 스타일 */
+.intro-title {
+    position: absolute; top: 12%; width: 100%; text-align: center; color: white;
+    transform: translateZ(50px) rotateY(30deg);
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3); 
+    transition: opacity 0.8s ease; pointer-events: none; z-index: 10;
+}
+.main-wrapper.active .intro-title { opacity: 0; }
+
+.sub-title { font-size: 1rem; margin-bottom: 15px; color: #888; letter-spacing: 4px; font-weight: 300; text-transform: uppercase; }
+.main-title { font-size: 5rem; line-height: 0.9; margin: 0; color: #fff; font-weight: 800; }
+.main-title span { color: #00ffcc; text-shadow: 0 0 25px rgba(0,255,255,0.6); }
+.slogan-container { margin-top: 30px; border-top: 1px solid #444; display: inline-block; padding-top: 20px; }
+.slogan-text { color: #ddd; font-size: 1.3rem; letter-spacing: 0.5px; margin: 0; line-height: 1.6; font-weight: 300; }
+.slogan-text strong { color: #fff; font-weight: 700; }
+.slogan-text .neon-blue { color: #00ffcc; }
+.slogan-text .neon-pink { color: #ff00cc; }
+
+/* 4. 기계 본체 */
+.claw-machine-3d {
+    width: 400px; height: 640px; position: relative; transform-style: preserve-3d;
+    box-shadow: 0 120px 100px rgba(0,0,0,0.9);
+}
+.face-3d { position: absolute; backface-visibility: visible; }
+
+/* 상단 캐비닛 & 유리 */
+.cabinet { position: absolute; top: 0; left: 0; width: 400px; height: 440px; transform-style: preserve-3d; }
+.glass { background: rgba(200, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1); pointer-events: none; }
+.glass.front { width: 400px; height: 440px; transform: translateZ(100px); }
+.glass.back  { width: 400px; height: 440px; transform: rotateY(180deg) translateZ(100px); }
+.glass.left  { width: 200px; height: 440px; transform: rotateY(-90deg) translateZ(200px); left: 100px; }
+.glass.right { width: 200px; height: 440px; transform: rotateY(90deg) translateZ(200px); left: 100px; }
+.glass.top   { width: 400px; height: 200px; transform: rotateX(90deg) translateZ(100px); top: 100px; background: rgba(255,255,255,0.05); }
+
+/* 내부 바닥 */
+.cabinet-floor {
+    position: absolute; width: 400px; height: 200px; background-color: #111;
+    background-image: linear-gradient(rgba(0, 255, 255, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 50px 50px; border: 1px solid #00ffcc; box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+    transform: rotateX(90deg) translateZ(-340px); top: 100px; transform-style: preserve-3d;
+}
+
+/* 하단 베이스 */
+.base { position: absolute; bottom: 0; left: 0; width: 400px; height: 200px; transform-style: preserve-3d; }
+.metal { background: linear-gradient(to bottom, #2a2a2a, #0a0a0a); border: 1px solid #333; }
+.metal.front { width: 400px; height: 200px; transform: translateZ(100px); display: flex; justify-content: center; align-items: flex-end;}
+.metal.back  { width: 400px; height: 200px; transform: rotateY(180deg) translateZ(100px); }
+.metal.left  { width: 200px; height: 200px; transform: rotateY(-90deg) translateZ(200px); left: 100px; }
+.metal.right { width: 200px; height: 200px; transform: rotateY(90deg) translateZ(200px); left: 100px; }
+.metal.top   { width: 400px; height: 200px; transform: rotateX(90deg) translateZ(100px); top: 100px; background: #1a1a1a; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #444; }
+
+/* 컨트롤러 */
+.joystick { width: 50px; height: 50px; background: #000; border-radius: 50%; border: 2px solid #00ffcc; transform: translateZ(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.joystick::after { content: ''; position: absolute; top: -35px; left: 15px; width: 16px; height: 45px; background: linear-gradient(to right, #00ffcc, #fff); border-radius: 8px; box-shadow: 0 0 10px #00ffcc; }
+.btn-group { display: flex; gap: 15px; transform: translateZ(10px); }
+.btn-deco { width: 40px; height: 40px; border-radius: 50%; background: #ff00cc; border: 2px solid #fff; box-shadow: 0 0 15px #ff00cc; cursor: pointer; }
+.active-btn { background:#00ffcc; border-color:white; box-shadow: 0 0 10px #00ffcc; }
+.chute { width: 140px; height: 80px; background: #000; border: 2px solid #444; border-radius: 10px 10px 0 0; box-shadow: inset 0 0 20px #000; margin-bottom: 20px; }
+
+/* 5. 3D 아이템 (큐브) */
+.cube-wrapper { position: absolute; width: 70px; height: 70px; transform-style: preserve-3d; cursor: pointer; transition: transform 0.2s; pointer-events: auto; }
+.cube-wrapper:hover { z-index: 100; }
+.cube-wrapper:hover .cube { transform: translateY(-30px) rotateX(20deg) rotateY(20deg); }
+.cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.3s; }
+.face { position: absolute; width: 70px; height: 70px; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; color: white; backface-visibility: visible; }
+.face.front  { transform: translateZ(35px); } .face.back   { transform: rotateY(180deg) translateZ(35px); } .face.right  { transform: rotateY(90deg) translateZ(35px); } .face.left   { transform: rotateY(-90deg) translateZ(35px); } .face.top    { transform: rotateX(90deg) translateZ(35px); } .face.bottom { transform: rotateX(-90deg) translateZ(35px); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+.biz .face { background: rgba(0, 80, 200, 0.8); border-color: #00ffff; }
+.game .face { background: rgba(200, 0, 150, 0.8); border-color: #ff00cc; }
+.face .label { transform: translateZ(5px); text-shadow: 0 0 5px rgba(0,0,0,0.5); letter-spacing: 1px; }
+
+#box1 { top: 60px; left: 40px; transform: translateZ(70px) rotateZ(15deg); }
+#box2 { top: 80px; right: 40px; transform: translateZ(90px) rotateZ(-10deg); }
+#box3 { bottom: 60px; left: 100px; transform: translateZ(60px) rotateZ(45deg); }
+#box4 { top: 60px; left: 130px; transform: translateZ(140px) rotateZ(-5deg); z-index: 10; }
+
+/* 6. 집게 */
+.claw-container { position: absolute; top: 0; left: 0; width: 400px; height: 400px; transform-style: preserve-3d; pointer-events: none; }
+.claw { position: absolute; top: 0; left: 50%; width: 80px; height: 100px; transform: translateX(-50%) translateZ(100px); transform-style: preserve-3d; transition: left 0.1s ease-out; }
+.claw-line { width: 4px; height: 100px; background: #333; margin: 0 auto; border: 1px solid #00ffcc; }
+.claw-body { width: 60px; height: 40px; border: 3px solid #00ffcc; border-top: none; border-radius: 0 0 30px 30px; margin: 0 auto; transition: transform 0.3s; background: rgba(0, 255, 255, 0.1); box-shadow: 0 0 15px #00ffcc; }
+.claw-action .claw-body { transform: translateY(40px) scale(0.9); }
+
+/* 애니메이션 */
+@keyframes dropSeq {
+    0% { transform: translateZ(60px) scale(1); opacity: 1; }
+    30% { transform: translateZ(250px) scale(1.1) rotateX(20deg); }
+    100% { transform: translateZ(-600px) scale(0) rotateX(180deg); opacity: 0; }
+}
+.dropping { animation: dropSeq 1s ease-in forwards; pointer-events: none; }
+
+/* 7. 모달 */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); z-index: 999; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: rgba(20,20,20,0.95); border: 2px solid #00ffcc; padding: 40px; border-radius: 20px; width: 320px; text-align: center; color: white; box-shadow: 0 0 60px rgba(0,255,255,0.2); animation: popUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes popUp { from { transform: scale(0.8); opacity:0; } to { transform: scale(1); opacity:1; } }
+.close-btn { margin-top:30px; padding:12px 30px; background:transparent; color:#00ffcc; border:2px solid #00ffcc; border-radius:30px; cursor:pointer; font-weight: bold; transition: 0.2s; }
+.close-btn:hover { background: #00ffcc; color: black; box-shadow: 0 0 20px #00ffcc; }
+.m-title { color:#00ffcc; margin-top:0; }
+.m-desc { font-size:15px; color:#ccc; margin:20px 0; line-height:1.5; }
+.skill-box { background:#333; padding:15px; border-radius:10px; text-align:left; border:1px solid #444; }
+.skill-box strong { color:#00ffcc; font-size:13px; letter-spacing:1px; }
+.skill-box span { font-size:14px; color:#fff; display:block; margin-top:5px; }
