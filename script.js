@@ -1,41 +1,42 @@
 let isActive = false;
-const mainWrapper = document.getElementById('mainWrapper');
+const wrapper = document.getElementById('mainWrapper');
 const claw = document.getElementById('claw');
 
 // 마우스 추적
 document.addEventListener('mousemove', (e) => {
     if (!isActive) return;
-    const width = window.innerWidth;
-    const xPercent = (e.clientX / width) * 100;
-    // 범위 제한
-    if (xPercent > 30 && xPercent < 70) {
-        claw.style.left = `${xPercent}%`;
+    const xPct = (e.clientX / window.innerWidth) * 100;
+    // 기계 범위 내로 제한
+    if (xPct > 35 && xPct < 65) {
+        claw.style.left = `${xPct}%`;
     }
 });
 
-// 활성화 (줌인)
 function activateMachine() {
     if (isActive) return;
-    mainWrapper.classList.add('active');
+    wrapper.classList.add('active');
     isActive = true;
 }
 
-// 아이템 선택
-function selectItem(event, id, element) {
+function selectItem(e, id, el) {
     if (!isActive) return;
-    event.stopPropagation();
-    
-    // 집게 모션
+    e.stopPropagation();
+
+    // 집게 움직임
     claw.classList.add('claw-action');
-    setTimeout(() => { element.classList.add('dropping'); }, 300);
-    setTimeout(() => { 
+    
+    setTimeout(() => {
+        el.classList.add('dropping');
+    }, 400);
+
+    setTimeout(() => {
+        document.getElementById('m-title').innerText = id.toUpperCase();
         document.getElementById('modal').classList.add('active');
-        claw.classList.remove('claw-action'); 
+        claw.classList.remove('claw-action');
     }, 1000);
 }
 
-// 모달 닫기
 function closeModal() {
     document.getElementById('modal').classList.remove('active');
-    document.querySelectorAll('.dropping').forEach(e => e.classList.remove('dropping'));
+    document.querySelectorAll('.dropping').forEach(el => el.classList.remove('dropping'));
 }
