@@ -3,76 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Si-An's DISPENSER LAB</title>
+    <title>DISPENSER LAB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Silkscreen&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="spotlight-top"></div>
+    <div class="background-glow"></div>
 
-    <div class="studio-floor"></div>
+    <div class="floor-stage">
+        <div class="dots"></div>
+    </div>
 
     <div class="main-wrapper" id="mainWrapper" onclick="activateMachine()">
         
-        <div class="intro-title">
+        <div class="title-area">
             <h1>DISPENSER LAB</h1>
             <p>Shaping Ideas into Design, Turning Code into Experiences.</p>
         </div>
 
-        <div class="claw-machine-3d">
-            
+        <div class="machine-container">
             <div class="roof">
-                <div class="face-3d roof-face front"></div>
-                <div class="face-3d roof-face back"></div>
-                <div class="face-3d roof-face left"></div>
-                <div class="face-3d roof-face right"></div>
-                <div class="face-3d roof-face top"></div>
+                <div class="face roof-top"></div>
+                <div class="face roof-front"></div>
+                <div class="face roof-left"></div>
+                <div class="face roof-right"></div>
+                <div class="face roof-back"></div>
             </div>
 
-            <div class="cabinet">
-                <div class="face-3d glass front"></div> <div class="face-3d glass back"></div>
-                <div class="face-3d glass left"></div>
-                <div class="face-3d glass right"></div>
-                
-                <div class="claw-container">
-                    <div class="claw" id="claw">
-                        <div class="claw-line"></div>
-                        <div class="claw-body"></div>
-                        <div class="claw-finger left"></div>
-                        <div class="claw-finger right"></div>
-                    </div>
+            <div class="window-area">
+                <div class="face glass-back"></div>
+                <div class="face glass-left"></div>
+                <div class="face glass-right"></div>
+                <div class="claw-wrap" id="claw">
+                    <div class="claw-rod"></div>
+                    <div class="claw-head"></div>
+                    <div class="claw-finger left"></div>
+                    <div class="claw-finger right"></div>
                 </div>
 
-                <div class="cabinet-floor">
-                    <div id="box1" class="cube-wrapper" onclick="selectItem(event, 'jaju', this)">
-                        <div class="cube"><div class="face front"></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                <div class="prizes">
+                    <div class="cube" id="box1" onclick="selectItem(event, 'jaju', this)">
+                        <div class="c-face c-top"></div><div class="c-face c-front"></div><div class="c-face c-right"></div>
                     </div>
-                    <div id="box2" class="cube-wrapper" onclick="selectItem(event, 'wander', this)">
-                        <div class="cube"><div class="face front"></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                    <div class="cube" id="box2" onclick="selectItem(event, 'wander', this)">
+                        <div class="c-face c-top"></div><div class="c-face c-front"></div><div class="c-face c-right"></div>
                     </div>
-                    <div id="box3" class="cube-wrapper" onclick="selectItem(event, 'pengcat', this)">
-                        <div class="cube"><div class="face front"></div><div class="face back"></div><div class="face right"></div><div class="face left"></div><div class="face top"></div><div class="face bottom"></div></div>
+                    <div class="cube" id="box3" onclick="selectItem(event, 'pengcat', this)">
+                        <div class="c-face c-top"></div><div class="c-face c-front"></div><div class="c-face c-right"></div>
                     </div>
                 </div>
             </div>
 
             <div class="base">
-                <div class="face-3d grey-body front">
-                    <div class="chute"></div> </div>
-                <div class="face-3d grey-body back"></div>
-                <div class="face-3d grey-body left"></div>
-                <div class="face-3d grey-body right"></div>
-                <div class="face-3d grey-body top"></div> </div>
+                <div class="face base-top"></div> <div class="face base-front">
+                    <div class="outlet"></div> </div>
+                <div class="face base-left"></div>
+                <div class="face base-right"></div>
+            </div>
         </div>
     </div>
 
     <div id="modal" class="modal-overlay" onclick="closeModal()">
         <div class="modal-box" onclick="event.stopPropagation()">
-            <h2 id="m-title">Title</h2>
-            <p id="m-desc">Description</p>
+            <h2 id="m-title">PROJECT</h2>
+            <p id="m-desc">Description goes here.</p>
             <button class="close-btn" onclick="closeModal()">CLOSE</button>
         </div>
     </div>
