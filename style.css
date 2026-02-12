@@ -1,251 +1,137 @@
+/* 1. 환경 설정 (흑백 스튜디오) */
 body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    background: #0a0a0a;
-    font-family: 'Pretendard', system-ui, -apple-system, sans-serif;
-    perspective: 1400px;
-    background-image: 
-        radial-gradient(circle at 50% 30%, rgba(0, 255, 220, 0.07) 0%, transparent 70%);
-    cursor: default;
+    margin: 0; padding: 0; width: 100%; height: 100vh; overflow: hidden;
+    background-color: #000; /* 완전 검은 배경 */
+    font-family: 'Silkscreen', cursive, sans-serif; /* 픽셀 폰트 적용 */
+    perspective: 1500px;
 }
 
+/* 상단 스포트라이트 (하얀 빛) */
+.spotlight-top {
+    position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
+    width: 120%; height: 60%;
+    background: radial-gradient(ellipse at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.2) 40%, transparent 70%);
+    pointer-events: none; z-index: 1; filter: blur(20px);
+}
+
+/* 바닥 (흰색 도트 패턴) */
 .studio-floor {
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 65%;
-    background: linear-gradient(to bottom, #111 0%, #000 100%);
-    background-image: 
-        radial-gradient(circle, rgba(40,40,40,0.9) 1px, transparent 1px),
-        radial-gradient(circle, rgba(30,30,30,0.7) 1px, transparent 1px);
-    background-size: 80px 80px, 40px 40px;
-    transform-origin: bottom;
-    transform: rotateX(32deg) scale(2.6);
+    position: absolute; bottom: 0; left: -50%; width: 200%; height: 100%;
+    background-color: #111;
+    /* 도트 패턴 만들기 */
+    background-image: radial-gradient(#666 1.5px, transparent 1.5px);
+    background-size: 30px 30px; /* 도트 간격 */
+    transform-origin: center bottom;
+    transform: rotateX(60deg) translateY(20%); /* 바닥 눕히기 */
     z-index: -2;
-    box-shadow: inset 0 80px 200px #000;
+    /* 멀어질수록 어두워지게 마스킹 */
+    mask-image: linear-gradient(to top, black 20%, transparent 80%);
+    -webkit-mask-image: linear-gradient(to top, black 20%, transparent 80%);
 }
 
-/* 메인 래퍼 */
+/* 2. 메인 래퍼 */
 .main-wrapper {
-    position: relative;
-    width: 100%; height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: relative; width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
     transform-style: preserve-3d;
-    transform: translateZ(-200px) rotateY(-18deg) translateY(30px);
-    transition: transform 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* 이미지와 비슷한 초기 각도 설정 */
+    transform: translateZ(-100px) rotateY(-25deg) rotateX(10deg);
+    cursor: pointer;
 }
 
 .main-wrapper.active {
-    transform: translateZ(380px) rotateY(0deg) translateY(-120px);
+    transform: translateZ(300px) rotateY(0deg) rotateX(0deg) translateY(50px);
+    cursor: default;
 }
 
-/* 타이틀 영역 - DISPENSER LAB 크게 위쪽 */
+/* 3. 타이틀 (픽셀 폰트) */
 .intro-title {
-    position: absolute;
-    top: 8%;
-    left: 0; right: 0;
-    text-align: center;
-    color: #f0f0f0;
-    transform: translateZ(120px);
-    text-shadow: 0 0 30px rgba(0,255,220,0.25), 0 0 60px rgba(0,0,0,0.8);
-    pointer-events: none;
-    z-index: 15;
+    position: absolute; top: 15%; width: 100%; text-align: center; color: white;
+    transform: translateZ(50px);
+    text-shadow: 0 4px 0 #999; /* 입체 텍스트 효과 */
+    transition: opacity 0.5s; pointer-events: none; z-index: 10;
 }
+.intro-title h1 { font-size: 4rem; margin: 0; letter-spacing: -2px; }
+.intro-title p { font-family: 'Pretendard', sans-serif; font-size: 1rem; color: #ccc; margin-top: 10px; letter-spacing: 1px; }
+.main-wrapper.active .intro-title { opacity: 0; }
 
-.sub-title {
-    font-size: 1.1rem;
-    letter-spacing: 6px;
-    color: #555;
-    font-weight: 300;
-    text-transform: uppercase;
-}
-
-.main-title {
-    font-size: 6.8rem;
-    line-height: 0.85;
-    margin: 10px 0 0;
-    font-weight: 900;
-    letter-spacing: -2px;
-    background: linear-gradient(90deg, #e0e0e0, #ffffff, #e0e0e0);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.main-title span {
-    color: #00ffcc;
-    text-shadow: 0 0 35px rgba(0,255,204,0.5);
-}
-
-.slogan-text {
-    margin-top: 25px;
-    font-size: 1.45rem;
-    color: #aaa;
-    letter-spacing: 1px;
-    font-weight: 300;
-}
-
-.slogan-text strong {
-    color: #fff;
-}
-
-/* Claw machine 본체 */
+/* 4. 기계 본체 (무광 회색 스타일) */
 .claw-machine-3d {
-    width: 420px;
-    height: 680px;
-    position: relative;
-    transform-style: preserve-3d;
-    box-shadow: 0 120px 100px rgba(0,0,0,0.9);
+    width: 360px; height: 580px; position: relative; transform-style: preserve-3d;
 }
-
 .face-3d { position: absolute; backface-visibility: visible; }
 
-.cabinet {
-    position: absolute;
-    top: 0; left: 0;
-    width: 420px; height: 460px;
-    transform-style: preserve-3d;
-    filter: brightness(0.75) contrast(1.1);
+/* -- 지붕 (Roof) -- */
+.roof { position: absolute; top: -40px; left: -20px; width: 400px; height: 40px; transform-style: preserve-3d; }
+.roof-face { background: #dcdcdc; border: 1px solid #bbb; } /* 밝은 회색 */
+.roof-face.front { width: 400px; height: 40px; transform: translateZ(180px); }
+.roof-face.back  { width: 400px; height: 40px; transform: rotateY(180deg) translateZ(180px); }
+.roof-face.left  { width: 360px; height: 40px; transform: rotateY(-90deg) translateZ(200px); }
+.roof-face.right { width: 360px; height: 40px; transform: rotateY(90deg) translateZ(200px); }
+.roof-face.top   { width: 400px; height: 360px; transform: rotateX(90deg) translateZ(20px); background: #f0f0f0; }
+
+/* -- 유리 캐비닛 -- */
+.cabinet { position: absolute; top: 0; left: 0; width: 360px; height: 360px; transform-style: preserve-3d; }
+.glass { 
+    background: rgba(255, 255, 255, 0.1); /* 투명 */
+    border: 2px solid #555; /* 진한 회색 프레임 */
+    pointer-events: none; 
 }
+.glass.front { width: 360px; height: 360px; transform: translateZ(180px); border:none; } /* 앞면은 뚫음 */
+.glass.back  { width: 360px; height: 360px; transform: rotateY(180deg) translateZ(180px); background: rgba(50,50,50,0.9); } /* 뒷면은 어둡게 */
+.glass.left  { width: 360px; height: 360px; transform: rotateY(-90deg) translateZ(180px); }
+.glass.right { width: 360px; height: 360px; transform: rotateY(90deg) translateZ(180px); }
 
-.glass {
-    background: rgba(180, 255, 255, 0.015);
-    border: 1px solid rgba(255,255,255,0.06);
-    pointer-events: none;
+/* -- 하단 베이스 -- */
+.base { position: absolute; top: 360px; left: 0; width: 360px; height: 220px; transform-style: preserve-3d; }
+.grey-body { background: #cecece; border: 1px solid #aaa; } /* 기본 회색 */
+.grey-body.front { width: 360px; height: 220px; transform: translateZ(180px); display:flex; align-items:flex-end; justify-content:center; }
+.grey-body.back  { width: 360px; height: 220px; transform: rotateY(180deg) translateZ(180px); }
+.grey-body.left  { width: 360px; height: 220px; transform: rotateY(-90deg) translateZ(180px); }
+.grey-body.right { width: 360px; height: 220px; transform: rotateY(90deg) translateZ(180px); }
+.grey-body.top   { width: 360px; height: 360px; transform: rotateX(90deg) translateZ(110px); background: #b0b0b0; } /* 컨트롤 패널 바닥 */
+
+/* 배출구 */
+.chute { width: 100px; height: 60px; background: #666; margin-bottom: 20px; box-shadow: inset 0 0 10px #000; border-radius: 5px; }
+
+/* 5. 아이템 (하얀 박스들) */
+.cabinet-floor { position: absolute; top: 200px; left: 0; width: 100%; height: 100%; transform-style: preserve-3d; }
+.cube-wrapper { position: absolute; width: 60px; height: 60px; transform-style: preserve-3d; cursor: pointer; transition: transform 0.2s; }
+.cube-wrapper:hover .cube { transform: translateY(-10px) rotateX(10deg) rotateY(10deg); }
+.cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+.face { position: absolute; width: 60px; height: 60px; background: #f0f0f0; border: 1px solid #ccc; } /* 하얀 박스 */
+.face.front  { transform: translateZ(30px); } 
+.face.back   { transform: rotateY(180deg) translateZ(30px); } 
+.face.right  { transform: rotateY(90deg) translateZ(30px); } 
+.face.left   { transform: rotateY(-90deg) translateZ(30px); } 
+.face.top    { transform: rotateX(90deg) translateZ(30px); background: #fff; } 
+.face.bottom { transform: rotateX(-90deg) translateZ(30px); box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+
+/* 아이템 위치 */
+#box1 { top: 0; left: 80px; transform: translateZ(50px) rotateY(20deg); }
+#box2 { top: 20px; right: 60px; transform: translateZ(40px) rotateY(-15deg); }
+#box3 { top: -40px; left: 140px; transform: translateZ(100px) rotateY(45deg); z-index: 5; }
+
+/* 6. 집게 (심플한 회색 집게) */
+.claw-container { position: absolute; top: 0; width: 100%; height: 100%; transform-style: preserve-3d; pointer-events: none; }
+.claw { position: absolute; top: 20px; left: 50%; transform: translateX(-50%) translateZ(180px); transform-style: preserve-3d; transition: left 0.1s; }
+.claw-line { width: 4px; height: 80px; background: #333; margin: 0 auto; }
+.claw-body { width: 40px; height: 30px; background: #555; margin: 0 auto; border-radius: 5px; }
+.claw-finger { width: 4px; height: 30px; background: #777; position: absolute; top: 110px; }
+.claw-finger.left { left: 25px; transform: rotate(20deg); }
+.claw-finger.right { right: 25px; transform: rotate(-20deg); }
+.claw-action .claw-body { transform: translateY(50px); }
+
+/* 애니메이션 */
+@keyframes dropSeq {
+    0% { transform: translateZ(50px); opacity: 1; }
+    100% { transform: translateZ(-300px); opacity: 0; }
 }
+.dropping { animation: dropSeq 0.8s forwards; }
 
-.glass.front { width: 420px; height: 460px; transform: translateZ(100px); }
-.glass.back { width: 420px; height: 460px; transform: rotateY(180deg) translateZ(100px); }
-.glass.left { width: 210px; height: 460px; transform: rotateY(-90deg) translateZ(210px); left: 105px; }
-.glass.right { width: 210px; height: 460px; transform: rotateY(90deg) translateZ(210px); left: 105px; }
-.glass.top { width: 420px; height: 210px; transform: rotateX(90deg) translateZ(100px); top: 105px; background: rgba(255,255,255,0.04); }
-
-/* 내부 바닥 */
-.cabinet-floor {
-    position: absolute;
-    width: 420px; height: 210px;
-    background-color: #111;
-    background-image: linear-gradient(rgba(0, 255, 255, 0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 255, 0.12) 1px, transparent 1px);
-    background-size: 45px 45px;
-    border: 1px solid #00ccaa;
-    box-shadow: 0 0 35px rgba(0, 255, 255, 0.08);
-    transform: rotateX(90deg) translateZ(-350px);
-    top: 105px;
-    transform-style: preserve-3d;
-}
-
-/* 하단 베이스 */
-.base {
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 420px; height: 220px;
-    transform-style: preserve-3d;
-}
-
-.metal {
-    background: linear-gradient(to bottom, #222, #0d0d0d);
-    border: 1px solid #2a2a2a;
-}
-
-.metal.front { width: 420px; height: 220px; transform: translateZ(100px); display: flex; justify-content: center; align-items: flex-end; }
-.metal.back { width: 420px; height: 220px; transform: rotateY(180deg) translateZ(100px); }
-.metal.left { width: 210px; height: 220px; transform: rotateY(-90deg) translateZ(210px); left: 105px; }
-.metal.right { width: 210px; height: 220px; transform: rotateY(90deg) translateZ(210px); left: 105px; }
-.metal.top { width: 420px; height: 220px; transform: rotateX(90deg) translateZ(100px); top: 105px; background: #1a1a1a; border-top: 1px solid #444; }
-
-/* 컨트롤러 부분 (간단히 유지) */
-.joystick { width: 50px; height: 50px; background: #000; border-radius: 50%; border: 2px solid #00ccaa; transform: translateZ(10px); box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-.joystick::after { content: ''; position: absolute; top: -35px; left: 15px; width: 16px; height: 45px; background: linear-gradient(to right, #00ccaa, #ccc); border-radius: 8px; box-shadow: 0 0 10px #00ccaa; }
-
-.btn-group { display: flex; gap: 15px; transform: translateZ(10px); }
-.btn-deco { width: 40px; height: 40px; border-radius: 50%; background: #cc00aa; border: 2px solid #fff; box-shadow: 0 0 15px #cc00aa; cursor: pointer; }
-
-/* 큐브들 - 픽셀 느낌으로 단순화 */
-.cube-wrapper {
-    position: absolute;
-    width: 70px; height: 70px;
-    transform-style: preserve-3d;
-    cursor: pointer;
-    transition: transform 0.2s;
-    pointer-events: auto;
-}
-
-.cube-wrapper:hover { z-index: 100; }
-.cube-wrapper:hover .cube { transform: translateY(-30px) rotateX(20deg) rotateY(20deg); }
-
-.cube {
-    width: 100%; height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.3s;
-}
-
-.face {
-    position: absolute;
-    width: 70px; height: 70px;
-    border: 1.5px solid rgba(180,180,180,0.4);
-    background: rgba(60,60,60,0.85);
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.7);
-    display: flex; justify-content: center; align-items: center;
-    font-size: 14px; font-weight: bold; color: white;
-    backface-visibility: visible;
-}
-
-.face.front { transform: translateZ(35px); }
-.face.back { transform: rotateY(180deg) translateZ(35px); }
-.face.right { transform: rotateY(90deg) translateZ(35px); }
-.face.left { transform: rotateY(-90deg) translateZ(35px); }
-.face.top { transform: rotateX(90deg) translateZ(35px); }
-.face.bottom { transform: rotateX(-90deg) translateZ(35px); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-
-/* 큐브 위치 예시 (이미지처럼 4개 정도) */
-#box1 { top: 60px; left: 40px; transform: translateZ(70px) rotateZ(15deg); }
-#box2 { top: 80px; right: 40px; transform: translateZ(90px) rotateZ(-10deg); }
-#box3 { bottom: 60px; left: 100px; transform: translateZ(60px) rotateZ(45deg); }
-#box4 { top: 60px; left: 130px; transform: translateZ(140px) rotateZ(-5deg); z-index: 10; }
-
-/* 집게 (claw) - 덜 화려하게 */
-.claw-container {
-    position: absolute;
-    top: 0; left: 0;
-    width: 420px; height: 420px;
-    transform-style: preserve-3d;
-    pointer-events: none;
-}
-
-.claw {
-    position: absolute;
-    top: 0; left: 50%;
-    width: 80px; height: 100px;
-    transform: translateX(-50%) translateZ(100px);
-    transform-style: preserve-3d;
-    transition: left 0.1s ease-out;
-}
-
-.claw-line {
-    width: 3px;
-    height: 100px;
-    background: #222;
-    margin: 0 auto;
-    border: 1px solid rgba(0,220,200,0.4);
-}
-
-.claw-body {
-    width: 60px; height: 40px;
-    border: 3px solid #00ccaa;
-    border-top: none;
-    border-radius: 0 0 30px 30px;
-    margin: 0 auto;
-    transition: transform 0.3s;
-    background: rgba(0,40,40,0.3);
-    box-shadow: 0 0 12px rgba(0,200,180,0.25);
-}
-
-.claw-action .claw-body {
-    transform: translateY(40px) scale(0.9);
-}
-
-/* 나머지 애니메이션, 모달 등은 그대로 유지하거나 필요시 추가하세요 */
+/* 7. 모달 (심플한 흑백) */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 100; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: white; padding: 40px; width: 300px; text-align: center; border-radius: 4px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); font-family: 'Pretendard', sans-serif; }
+.close-btn { background: black; color: white; border: none; padding: 10px 20px; margin-top: 20px; cursor: pointer; font-family: 'Silkscreen', cursive; }
