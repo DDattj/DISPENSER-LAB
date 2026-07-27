@@ -1,79 +1,367 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DISPENSER LAB</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Silkscreen&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIAN — Design Archive</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<style>
+  :root{
+    --bg: #f7f5f0;
+    --ink: #211f1c;
+    --ink-soft: #6b675f;
+    --line: #ded9cf;
+    --sage: #6f7d5e;
+    --sage-deep: #4b5640;
+    --card-bg: #ffffff;
+    --dusty: #7688a3;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* ---------- Header / Hero ---------- */
+  .hero {
+    position: relative;
+    padding: 96px 8vw 64px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset: -40% -10% auto -10%;
+    height: 140%;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(111,125,94,0.16), transparent 55%),
+      radial-gradient(circle at 85% 0%, rgba(118,136,163,0.14), transparent 50%);
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    position: relative;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+
+  .eyebrow::before{
+    content: "";
+    display: inline-block;
+    width: 22px;
+    height: 1px;
+    background: var(--sage-deep);
+    margin-right: 10px;
+    vertical-align: middle;
+  }
+
+  .hero h1 {
+    position: relative;
+    margin: 0 0 20px;
+    font-size: clamp(48px, 9vw, 108px);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  .hero h1 span {
+    color: var(--sage-deep);
+  }
+
+  .hero p {
+    position: relative;
+    max-width: 560px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    margin: 0 0 36px;
+  }
+
+  .hero-meta {
+    position: relative;
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .hero-meta div { border-inline-start: 1px solid var(--line); padding-inline-start: 16px; }
+  .hero-meta strong { display: block; color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+
+  /* ---------- Nav ---------- */
+  .topnav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8vw;
+    background: rgba(247,245,240,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .topnav .mark { font-weight: 800; letter-spacing: -0.02em; font-size: 18px; }
+  .topnav .links { display: flex; gap: 28px; font-size: 13px; color: var(--ink-soft); }
+  .topnav .links a:hover { color: var(--sage-deep); }
+
+  /* ---------- Catalog grid ---------- */
+  .catalog {
+    padding: 72px 8vw 120px;
+  }
+
+  .catalog-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .catalog-head h2 {
+    font-size: 28px;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .catalog-head p {
+    margin: 6px 0 0;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  .filter {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter button {
+    font-family: inherit;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .15s ease;
+  }
+
+  .filter button.active,
+  .filter button:hover {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: #fff;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 22px;
+  }
+
+  .card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 34px -20px rgba(33,31,28,0.35);
+    border-color: transparent;
+  }
+
+  .card-thumb {
+    aspect-ratio: 4 / 3;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+  }
+
+  .card-thumb .no {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.85);
+    background: rgba(0,0,0,0.18);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .card-tag {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    font-weight: 700;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 40px 8vw 60px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  @media (max-width: 640px) {
+    .topnav .links { display: none; }
+    .hero { padding: 72px 6vw 48px; }
+    .catalog { padding: 48px 6vw 80px; }
+  }
+</style>
 </head>
 <body>
 
-    <div class="background-glow"></div>
+<nav class="topnav">
+  <div class="mark">SIAN<span style="color:var(--sage-deep)">.</span></div>
+  <div class="links">
+    <a href="#catalog">Catalog</a>
+    <a href="#about">About</a>
+    <a href="mailto:hello@example.com">Contact</a>
+  </div>
+</nav>
 
-    <div class="floor-stage">
-        <div class="dots"></div>
+<header class="hero">
+  <div class="eyebrow">Product &amp; Package Design Archive</div>
+  <h1>Design<br><span>Project;</span> Sian</h1>
+  <p>생활 속 사물을 다시 그리는 작업들의 기록. 리빙, 뷰티, 소형가전, 패키지까지 —
+  기획부터 상세페이지까지 진행한 프로젝트를 모아둔 카탈로그입니다.</p>
+  <div class="hero-meta">
+    <div><strong>17</strong>Projects</div>
+    <div><strong>6</strong>Categories</div>
+    <div><strong>2024–2026</strong>Timeline</div>
+  </div>
+</header>
+
+<section class="catalog" id="catalog">
+  <div class="catalog-head">
+    <div>
+      <h2>Catalog</h2>
+      <p>카테고리로 골라보세요.</p>
     </div>
-
-    <div class="main-wrapper" id="mainWrapper" onclick="activateMachine()">
-        
-        <div class="title-area">
-            <h1>DISPENSER LAB</h1>
-            <p>Shaping Ideas into Design, Turning Code into Experiences.</p>
-        </div>
-
-        <div class="machine-container">
-            <div class="roof">
-                <div class="face roof-top"></div>
-                <div class="face roof-front"></div>
-                <div class="face roof-left"></div>
-                <div class="face roof-right"></div>
-                <div class="face roof-back"></div>
-            </div>
-
-            <div class="window-area">
-                <div class="face glass-back"></div>
-                <div class="face glass-left"></div>
-                <div class="face glass-right"></div>
-                <div class="claw-wrap" id="claw">
-                    <div class="claw-rod"></div>
-                    <div class="claw-head"></div>
-                    <div class="claw-finger left"></div>
-                    <div class="claw-finger right"></div>
-                </div>
-
-                <div class="prizes">
-                    <div class="cube" id="box1" onclick="selectItem(event, 'jaju', this)">
-                        <div class="c-face c-top"></div><div class="c-face c-front"></div><div class="c-face c-right"></div>
-                    </div>
-                    <div class="cube" id="box2" onclick="selectItem(event, 'wander', this)">
-                        <div class="c-face c-top"></div><div class="c-face c-front"></div><div class="c-face c-right"></div>
-                    </div>
-                    <div class="cube" id="box3" onclick="selectItem(event, 'pengcat', this)">
-                        <div class="c-face c-top"></div><div class="c-face c-front"></div><div class="c-face c-right"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="base">
-                <div class="face base-top"></div> <div class="face base-front">
-                    <div class="outlet"></div> </div>
-                <div class="face base-left"></div>
-                <div class="face base-right"></div>
-            </div>
-        </div>
+    <div class="filter" id="filterBar">
+      <button data-cat="all" class="active">전체</button>
+      <button data-cat="living">리빙</button>
+      <button data-cat="beauty">뷰티</button>
+      <button data-cat="device">소형가전</button>
+      <button data-cat="etc">기타</button>
     </div>
+  </div>
 
-    <div id="modal" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-box" onclick="event.stopPropagation()">
-            <h2 id="m-title">PROJECT</h2>
-            <p id="m-desc">Description goes here.</p>
-            <button class="close-btn" onclick="closeModal()">CLOSE</button>
-        </div>
-    </div>
+  <div class="grid" id="grid"></div>
+</section>
 
-    <script src="script.js"></script>
+<footer id="about">
+  <div>© 2026 Sian. All rights reserved.</div>
+  <div>Built with plain HTML — hosted on GitHub Pages.</div>
+</footer>
+
+<script>
+  // 프로젝트 목록 — title, category, 그라디언트 색상만 바꿔서 자유롭게 추가/수정하세요.
+  const projects = [
+    { no: "01", title: "쌀 수분 진정 시리즈", cat: "beauty", grad: ["#e7d9c4", "#b8a184"] },
+    { no: "02", title: "넥쿨러",              cat: "device", grad: ["#c9d6e0", "#7c93a8"] },
+    { no: "03", title: "선풍기",              cat: "device", grad: ["#dfe6d9", "#8fa382"] },
+    { no: "04", title: "AIR 냉감",            cat: "living", grad: ["#d6e4e8", "#7fa3ac"] },
+    { no: "05", title: "컴팩트 마우스 키보드 세트", cat: "device", grad: ["#e2e2e2", "#9a9a9a"] },
+    { no: "06", title: "강력 자석 수납 시리즈",  cat: "living", grad: ["#ece0cf", "#c2a76e"] },
+    { no: "07", title: "스테인리스 조리 와이어 시리즈", cat: "living", grad: ["#d9dede", "#8b9494"] },
+    { no: "08", title: "접이식 카트",          cat: "living", grad: ["#e6d8c8", "#a98b63"] },
+    { no: "09", title: "핸드 밴딩 샤워볼",      cat: "beauty", grad: ["#f0dbe3", "#c98ba4"] },
+    { no: "10", title: "퍼퓸바",              cat: "beauty", grad: ["#ece5da", "#b9a98a"] },
+    { no: "11", title: "코튼 캔들",            cat: "beauty", grad: ["#f2e9df", "#cdb896"] },
+    { no: "12", title: "차량용 디퓨저",        cat: "beauty", grad: ["#dde3ea", "#8595ac"] },
+    { no: "13", title: "블렌드티",            cat: "etc",    grad: ["#e3ddc9", "#a89d6c"] },
+    { no: "14", title: "열탕 소독 가습기",      cat: "device", grad: ["#d6e2df", "#6f9a8f"] },
+    { no: "15", title: "PengCat Puzzle",     cat: "etc",    grad: ["#dbe2f0", "#8092c2"] },
+    { no: "16", title: "JAJU 상세페이지 템플릿", cat: "etc",    grad: ["#e8e4dc", "#a9a196"] },
+    { no: "17", title: "Wanderboard",        cat: "etc",    grad: ["#e0e6da", "#8fa07b"] },
+  ];
+
+  const grid = document.getElementById("grid");
+
+  function render(filter) {
+    grid.innerHTML = "";
+    projects
+      .filter(p => filter === "all" || p.cat === filter)
+      .forEach(p => {
+        const card = document.createElement("a");
+        card.className = "card";
+        card.href = "#"; // 실제 상세 페이지 링크로 교체하세요
+        card.innerHTML = `
+          <div class="card-thumb" style="background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})">
+            <span class="no">No. ${p.no}</span>
+          </div>
+          <div class="card-body">
+            <span class="card-tag">${labelFor(p.cat)}</span>
+            <span class="card-title">${p.title}</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+  }
+
+  function labelFor(cat) {
+    return { living: "리빙", beauty: "뷰티", device: "소형가전", etc: "기타" }[cat] || "기타";
+  }
+
+  document.getElementById("filterBar").addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+    document.querySelectorAll("#filterBar button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.cat);
+  });
+
+  render("all");
+</script>
+
 </body>
 </html>
