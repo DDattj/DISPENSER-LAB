@@ -9,10 +9,10 @@
   href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
 <style>
   :root{
-    --bg: #f7f5f0;
+    --bg: #ffffff;
     --ink: #211f1c;
     --ink-soft: #6b675f;
-    --line: #ded9cf;
+    --line: #e9e5db;
     --sage: #6f7d5e;
     --sage-deep: #4b5640;
     --card-bg: #ffffff;
@@ -20,8 +20,6 @@
   }
 
   * { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
 
   body {
     margin: 0;
@@ -33,104 +31,89 @@
 
   a { color: inherit; text-decoration: none; }
 
-  /* ---------- Header / Hero ---------- */
-  .hero {
+  /* ---------- Banner (GIF/이미지 넣는 자리) ---------- */
+  .banner {
     position: relative;
-    padding: 96px 8vw 64px;
+    width: 100%;
+    height: 22vh;
+    min-height: 160px;
+    max-height: 280px;
     overflow: hidden;
-    border-bottom: 1px solid var(--line);
+    background: linear-gradient(135deg, #eef1e9, #dfe6da);
   }
 
-  .hero::before{
-    content:"";
-    position:absolute;
-    inset: -40% -10% auto -10%;
-    height: 140%;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(111,125,94,0.16), transparent 55%),
-      radial-gradient(circle at 85% 0%, rgba(118,136,163,0.14), transparent 50%);
-    pointer-events: none;
+  .banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
-  .eyebrow {
-    position: relative;
-    font-size: 12px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--sage-deep);
-    font-weight: 600;
-    margin-bottom: 22px;
-  }
-
-  .eyebrow::before{
-    content: "";
-    display: inline-block;
-    width: 22px;
-    height: 1px;
-    background: var(--sage-deep);
-    margin-right: 10px;
-    vertical-align: middle;
-  }
-
-  .hero h1 {
-    position: relative;
-    margin: 0 0 20px;
-    font-size: clamp(48px, 9vw, 108px);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    line-height: 0.95;
-  }
-
-  .hero h1 span {
-    color: var(--sage-deep);
-  }
-
-  .hero p {
-    position: relative;
-    max-width: 560px;
-    font-size: 17px;
-    line-height: 1.7;
-    color: var(--ink-soft);
-    margin: 0 0 36px;
-  }
-
-  .hero-meta {
-    position: relative;
+  .banner .banner-placeholder {
+    position: absolute;
+    inset: 0;
     display: flex;
-    gap: 40px;
-    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--ink-soft);
     font-size: 13px;
-    color: var(--ink-soft);
+    text-align: center;
   }
 
-  .hero-meta div { border-inline-start: 1px solid var(--line); padding-inline-start: 16px; }
-  .hero-meta strong { display: block; color: var(--ink); font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-
-  /* ---------- Catalog grid ---------- */
-  .catalog {
-    padding: 72px 8vw 120px;
-  }
-
-  .catalog-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 40px;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .catalog-head h2 {
-    font-size: 28px;
-    margin: 0;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-  }
-
-  .catalog-head p {
-    margin: 6px 0 0;
-    color: var(--ink-soft);
+  .banner .banner-placeholder b {
+    color: var(--ink);
     font-size: 14px;
+  }
+
+  /* ---------- Title area ---------- */
+  .title-area {
+    padding: 28px 8vw 16px;
+  }
+
+  .title-area h1 {
+    margin: 0;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  /* ---------- Tab / filter row ---------- */
+  .tabbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 28px 8vw 20px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 32px;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tabs button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+
+  .tabs button.active {
+    background: #f1efe9;
+    color: var(--ink);
   }
 
   .filter {
@@ -142,7 +125,7 @@
   .filter button {
     font-family: inherit;
     font-size: 13px;
-    padding: 8px 16px;
+    padding: 7px 15px;
     border-radius: 999px;
     border: 1px solid var(--line);
     background: transparent;
@@ -158,71 +141,67 @@
     color: #fff;
   }
 
+  /* ---------- Gallery grid ---------- */
+  .catalog {
+    padding: 0 8vw 120px;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 22px;
+    gap: 20px;
   }
 
   .card {
     position: relative;
+    aspect-ratio: 4 / 3;
     background: var(--card-bg);
     border: 1px solid var(--line);
-    border-radius: 14px;
+    border-radius: 10px;
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    box-shadow: 0 1px 2px rgba(33,31,28,0.04);
+    transition: transform .2s ease, box-shadow .2s ease;
   }
 
   .card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 18px 34px -20px rgba(33,31,28,0.35);
-    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 16px 30px -18px rgba(33,31,28,0.35);
   }
 
   .card-thumb {
-    aspect-ratio: 4 / 3;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 14px;
+    position: absolute;
+    inset: 0;
+    background: var(--line);
   }
 
-  .card-thumb .no {
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.85);
-    background: rgba(0,0,0,0.18);
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-weight: 600;
+  .card-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .card-body {
-    padding: 16px 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .card-tag {
-    font-size: 11px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--sage-deep);
-    font-weight: 700;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    padding: 10px 14px 12px;
   }
 
   .card-title {
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.35;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
   }
 
   /* ---------- Footer ---------- */
   footer {
-    padding: 40px 8vw 60px;
+    padding: 32px 8vw 60px;
     border-top: 1px solid var(--line);
     display: flex;
     justify-content: space-between;
@@ -233,50 +212,41 @@
   }
 
   @media (max-width: 640px) {
-    .topnav .links { display: none; }
-    .hero { padding: 72px 6vw 48px; }
-    .catalog { padding: 48px 6vw 80px; }
+    .catalog { padding: 0 6vw 80px; }
+    .title-area, .tabbar { padding-inline: 6vw; }
   }
 </style>
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="mark">SIAN<span style="color:var(--sage-deep)">.</span></div>
-  <div class="links">
-    <a href="#catalog">Catalog</a>
-    <a href="#about">About</a>
-    <a href="mailto:hello@example.com">Contact</a>
+<!--
+  ▼ 배너(GIF) 자리
+  images 폴더 안에 banner.gif 파일을 넣으면 자동으로 여기 나옵니다.
+  파일이 없으면 아래 placeholder 문구가 대신 보여요.
+-->
+<div class="banner">
+  <img src="images/banner.gif" alt="배너"
+       onerror="this.style.display='none'; document.getElementById('bannerPlaceholder').style.display='flex';">
+  <div class="banner-placeholder" id="bannerPlaceholder" style="display:none;">
+    <b>배너 GIF를 넣어주세요</b>
+    <span>images 폴더에 banner.gif 파일을 넣으면 여기에 표시됩니다</span>
   </div>
-</nav>
+</div>
 
-<header class="hero">
-  <div class="eyebrow">Product &amp; Package Design Archive</div>
-  <h1>Design<br><span>Project;</span> Sian</h1>
-  <p>생활 속 사물을 다시 그리는 작업들의 기록. 리빙, 뷰티, 소형가전, 패키지까지 —
-  기획부터 상세페이지까지 진행한 프로젝트를 모아둔 카탈로그입니다.</p>
-  <div class="hero-meta">
-    <div><strong>17</strong>Projects</div>
-    <div><strong>6</strong>Categories</div>
-    <div><strong>2024–2026</strong>Timeline</div>
+<div class="tabbar">
+  <div class="tabs" id="tabBar">
+    <button class="active" data-cat="all">🖼 갤러리</button>
   </div>
-</header>
+  <div class="filter" id="filterBar">
+    <button data-cat="all" class="active">전체</button>
+    <button data-cat="living">리빙</button>
+    <button data-cat="beauty">뷰티</button>
+    <button data-cat="device">소형가전</button>
+    <button data-cat="etc">기타</button>
+  </div>
+</div>
 
 <section class="catalog" id="catalog">
-  <div class="catalog-head">
-    <div>
-      <h2>Catalog</h2>
-      <p>카테고리로 골라보세요.</p>
-    </div>
-    <div class="filter" id="filterBar">
-      <button data-cat="all" class="active">전체</button>
-      <button data-cat="living">리빙</button>
-      <button data-cat="beauty">뷰티</button>
-      <button data-cat="device">소형가전</button>
-      <button data-cat="etc">기타</button>
-    </div>
-  </div>
-
   <div class="grid" id="grid"></div>
 </section>
 
@@ -286,25 +256,27 @@
 </footer>
 
 <script>
-  // 프로젝트 목록 — title, category, 그라디언트 색상만 바꿔서 자유롭게 추가/수정하세요.
+  // 프로젝트 목록
+  // img: images/01.jpg 처럼 실제 파일을 넣으면 자동으로 사진이 나오고,
+  //      파일이 없으면 grad 색상으로 대체됩니다.
   const projects = [
-    { no: "01", title: "쌀 수분 진정 시리즈", cat: "beauty", grad: ["#e7d9c4", "#b8a184"] },
-    { no: "02", title: "넥쿨러",              cat: "device", grad: ["#c9d6e0", "#7c93a8"] },
-    { no: "03", title: "선풍기",              cat: "device", grad: ["#dfe6d9", "#8fa382"] },
-    { no: "04", title: "AIR 냉감",            cat: "living", grad: ["#d6e4e8", "#7fa3ac"] },
-    { no: "05", title: "컴팩트 마우스 키보드 세트", cat: "device", grad: ["#e2e2e2", "#9a9a9a"] },
-    { no: "06", title: "강력 자석 수납 시리즈",  cat: "living", grad: ["#ece0cf", "#c2a76e"] },
-    { no: "07", title: "스테인리스 조리 와이어 시리즈", cat: "living", grad: ["#d9dede", "#8b9494"] },
-    { no: "08", title: "접이식 카트",          cat: "living", grad: ["#e6d8c8", "#a98b63"] },
-    { no: "09", title: "핸드 밴딩 샤워볼",      cat: "beauty", grad: ["#f0dbe3", "#c98ba4"] },
-    { no: "10", title: "퍼퓸바",              cat: "beauty", grad: ["#ece5da", "#b9a98a"] },
-    { no: "11", title: "코튼 캔들",            cat: "beauty", grad: ["#f2e9df", "#cdb896"] },
-    { no: "12", title: "차량용 디퓨저",        cat: "beauty", grad: ["#dde3ea", "#8595ac"] },
-    { no: "13", title: "블렌드티",            cat: "etc",    grad: ["#e3ddc9", "#a89d6c"] },
-    { no: "14", title: "열탕 소독 가습기",      cat: "device", grad: ["#d6e2df", "#6f9a8f"] },
-    { no: "15", title: "PengCat Puzzle",     cat: "etc",    grad: ["#dbe2f0", "#8092c2"] },
-    { no: "16", title: "JAJU 상세페이지 템플릿", cat: "etc",    grad: ["#e8e4dc", "#a9a196"] },
-    { no: "17", title: "Wanderboard",        cat: "etc",    grad: ["#e0e6da", "#8fa07b"] },
+    { no: "01", title: "쌀 수분 진정 시리즈", cat: "beauty", img: "images/01.jpg", grad: ["#e7d9c4", "#b8a184"] },
+    { no: "02", title: "넥쿨러",              cat: "device", img: "images/02.jpg", grad: ["#c9d6e0", "#7c93a8"] },
+    { no: "03", title: "선풍기",              cat: "device", img: "images/03.jpg", grad: ["#dfe6d9", "#8fa382"] },
+    { no: "04", title: "AIR 냉감",            cat: "living", img: "images/04.jpg", grad: ["#d6e4e8", "#7fa3ac"] },
+    { no: "05", title: "컴팩트 마우스 키보드 세트", cat: "device", img: "images/05.jpg", grad: ["#e2e2e2", "#9a9a9a"] },
+    { no: "06", title: "강력 자석 수납 시리즈",  cat: "living", img: "images/06.jpg", grad: ["#ece0cf", "#c2a76e"] },
+    { no: "07", title: "스테인리스 조리 와이어 시리즈", cat: "living", img: "images/07.jpg", grad: ["#d9dede", "#8b9494"] },
+    { no: "08", title: "접이식 카트",          cat: "living", img: "images/08.jpg", grad: ["#e6d8c8", "#a98b63"] },
+    { no: "09", title: "핸드 밴딩 샤워볼",      cat: "beauty", img: "images/09.jpg", grad: ["#f0dbe3", "#c98ba4"] },
+    { no: "10", title: "퍼퓸바",              cat: "beauty", img: "images/10.jpg", grad: ["#ece5da", "#b9a98a"] },
+    { no: "11", title: "코튼 캔들",            cat: "beauty", img: "images/11.jpg", grad: ["#f2e9df", "#cdb896"] },
+    { no: "12", title: "차량용 디퓨저",        cat: "beauty", img: "images/12.jpg", grad: ["#dde3ea", "#8595ac"] },
+    { no: "13", title: "블렌드티",            cat: "etc",    img: "images/13.jpg", grad: ["#e3ddc9", "#a89d6c"] },
+    { no: "14", title: "열탕 소독 가습기",      cat: "device", img: "images/14.jpg", grad: ["#d6e2df", "#6f9a8f"] },
+    { no: "15", title: "PengCat Puzzle",     cat: "etc",    img: "images/15.jpg", grad: ["#dbe2f0", "#8092c2"] },
+    { no: "16", title: "JAJU 상세페이지 템플릿", cat: "etc",    img: "images/16.jpg", grad: ["#e8e4dc", "#a9a196"] },
+    { no: "17", title: "Wanderboard",        cat: "etc",    img: "images/17.jpg", grad: ["#e0e6da", "#8fa07b"] },
   ];
 
   const grid = document.getElementById("grid");
@@ -319,19 +291,14 @@
         card.href = "#"; // 실제 상세 페이지 링크로 교체하세요
         card.innerHTML = `
           <div class="card-thumb" style="background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})">
-            <span class="no">No. ${p.no}</span>
+            <img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">
           </div>
           <div class="card-body">
-            <span class="card-tag">${labelFor(p.cat)}</span>
             <span class="card-title">${p.title}</span>
           </div>
         `;
         grid.appendChild(card);
       });
-  }
-
-  function labelFor(cat) {
-    return { living: "리빙", beauty: "뷰티", device: "소형가전", etc: "기타" }[cat] || "기타";
   }
 
   document.getElementById("filterBar").addEventListener("click", (e) => {
