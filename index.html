@@ -215,6 +215,141 @@
     .catalog { padding: 0 6vw 80px; }
     .title-area, .tabbar { padding-inline: 6vw; }
   }
+
+  /* ---------- Floating Add Button ---------- */
+  .fab {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 12px 28px -10px rgba(33,31,28,0.5);
+    z-index: 40;
+    transition: transform .15s ease;
+  }
+
+  .fab:hover { transform: scale(1.06); }
+
+  /* ---------- Upload Modal ---------- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(33,31,28,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    padding: 20px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4);
+  }
+
+  .modal h3 {
+    margin: 0 0 18px;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .modal label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin: 14px 0 6px;
+  }
+
+  .modal input[type="text"],
+  .modal select {
+    width: 100%;
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fdfcfa;
+  }
+
+  .modal input[type="file"] {
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .modal .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .modal button.primary,
+  .modal button.secondary {
+    flex: 1;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 11px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: none;
+  }
+
+  .modal button.primary { background: var(--ink); color: #fff; }
+  .modal button.primary:disabled { opacity: .5; cursor: not-allowed; }
+  .modal button.secondary { background: #f1efe9; color: var(--ink); }
+
+  .modal .status-msg {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    min-height: 16px;
+  }
+
+  /* ---------- Login ---------- */
+  .fab { display: none; } /* 로그인 전엔 숨김 */
+
+  .login-link {
+    position: fixed;
+    right: 28px;
+    bottom: 28px;
+    z-index: 39;
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: #fff;
+    border: 1px solid var(--line);
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px -8px rgba(33,31,28,0.3);
+  }
+
+  .login-link:hover { color: var(--ink); }
+
+  .logout-link {
+    position: fixed;
+    right: 96px;
+    bottom: 42px;
+    z-index: 41;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    text-decoration: underline;
+    display: none;
+  }
 </style>
 </head>
 <body>
@@ -255,8 +390,77 @@
   <div>Built with plain HTML — hosted on GitHub Pages.</div>
 </footer>
 
+<!-- 플러스 버튼 -->
+<button class="fab" id="fabBtn" title="새 프로젝트 추가">+</button>
+
+<!-- 로그인 / 로그아웃 -->
+<div class="login-link" id="loginLink">🔑 구글로 로그인</div>
+<div class="logout-link" id="logoutLink">로그아웃</div>
+
+<!-- 업로드 모달 -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>새 프로젝트 추가</h3>
+
+    <label>이미지</label>
+    <input type="file" id="inputImage" accept="image/*">
+
+    <label>제목</label>
+    <input type="text" id="inputTitle" placeholder="예: 우드 트레이 시리즈">
+
+    <label>카테고리</label>
+    <select id="inputCat">
+      <option value="living">리빙</option>
+      <option value="beauty">뷰티</option>
+      <option value="device">소형가전</option>
+      <option value="etc">기타</option>
+    </select>
+
+    <div class="modal-actions">
+      <button class="secondary" id="cancelBtn">취소</button>
+      <button class="primary" id="saveBtn">저장</button>
+    </div>
+    <div class="status-msg" id="statusMsg"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
 <script>
-  // 프로젝트 목록
+  // ============================================================
+  // ▼ Firebase 설정값 — Firebase 콘솔에서 발급받은 값으로 교체하세요
+  //   (프로젝트 설정 → 일반 → 내 앱 → SDK 설정 및 구성)
+  // ============================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyAOAgQnvj4zs3bQM2dyoH69AgXk8WANOsA",
+    authDomain: "designprojectsian.firebaseapp.com",
+    databaseURL: "https://designprojectsian-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "designprojectsian",
+    storageBucket: "designprojectsian.firebasestorage.app",
+    messagingSenderId: "80013229347",
+    appId: "1:80013229347:web:be1d2657e04d2c2fabe096",
+    measurementId: "G-G7SR48RJQW"
+  };
+
+  let firebaseReady = false;
+  let db, storage, auth;
+  try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    storage = firebase.storage();
+    auth = firebase.auth();
+    firebaseReady = true;
+  } catch (e) {
+    console.warn("Firebase 설정이 아직 채워지지 않았어요. 플러스 버튼 저장 기능은 설정 완료 후 작동합니다.", e);
+  }
+</script>
+
+<script>
+  // 기본 프로젝트 목록 (고정)
   // img: images/01.jpg 처럼 실제 파일을 넣으면 자동으로 사진이 나오고,
   //      파일이 없으면 grad 색상으로 대체됩니다.
   const projects = [
@@ -280,23 +484,33 @@
   ];
 
   const grid = document.getElementById("grid");
+  let currentFilter = "all";
+
+  function cardHTML(p) {
+    const bg = p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db";
+    const imgTag = p.img
+      ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">`
+      : "";
+    return `
+      <div class="card-thumb" style="${bg}">
+        ${imgTag}
+      </div>
+      <div class="card-body">
+        <span class="card-title">${p.title}</span>
+      </div>
+    `;
+  }
 
   function render(filter) {
+    currentFilter = filter;
     grid.innerHTML = "";
     projects
       .filter(p => filter === "all" || p.cat === filter)
       .forEach(p => {
         const card = document.createElement("a");
         card.className = "card";
-        card.href = "#"; // 실제 상세 페이지 링크로 교체하세요
-        card.innerHTML = `
-          <div class="card-thumb" style="background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})">
-            <img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">
-          </div>
-          <div class="card-body">
-            <span class="card-title">${p.title}</span>
-          </div>
-        `;
+        card.href = "#";
+        card.innerHTML = cardHTML(p);
         grid.appendChild(card);
       });
   }
@@ -310,6 +524,140 @@
   });
 
   render("all");
+
+  // ============================================================
+  // Firestore에서 사용자가 추가한 프로젝트 불러오기
+  // ============================================================
+  async function loadUserProjects() {
+    if (!firebaseReady) return;
+    try {
+      const snapshot = await db.collection("projects").orderBy("createdAt", "desc").get();
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        projects.push({ title: d.title, cat: d.cat, img: d.imageUrl, grad: null });
+      });
+      render(currentFilter);
+    } catch (e) {
+      console.warn("프로젝트 불러오기 실패:", e);
+    }
+  }
+  loadUserProjects();
+
+  // ============================================================
+  // 플러스 버튼 / 모달 / 저장 로직
+  // ============================================================
+  const fabBtn = document.getElementById("fabBtn");
+  const modalOverlay = document.getElementById("modalOverlay");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const statusMsg = document.getElementById("statusMsg");
+
+  fabBtn.addEventListener("click", () => {
+    modalOverlay.classList.add("open");
+  });
+
+  cancelBtn.addEventListener("click", () => {
+    modalOverlay.classList.remove("open");
+    statusMsg.textContent = "";
+  });
+
+  // ============================================================
+  // 로그인 / 로그아웃 (구글 로그인)
+  // ============================================================
+  const loginLink = document.getElementById("loginLink");
+  const logoutLink = document.getElementById("logoutLink");
+
+  loginLink.addEventListener("click", async () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    try {
+      await auth.signInWithPopup(provider);
+    } catch (e) {
+      console.error(e);
+      alert("로그인에 실패했어요: " + e.message);
+    }
+  });
+
+  logoutLink.addEventListener("click", () => {
+    auth.signOut();
+  });
+
+  // ============================================================
+  // 관리자 이메일 화이트리스트
+  // ============================================================
+  const ADMIN_EMAILS = ["imddattj@gmail.com"];
+
+  // 로그인 상태에 따라 + 버튼 노출
+  if (firebaseReady) {
+    auth.onAuthStateChanged((user) => {
+      const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+
+      if (user && !isAdmin) {
+        // 허용되지 않은 계정으로 로그인한 경우 바로 로그아웃
+        alert("관리자 계정이 아니에요. 다른 구글 계정으로 로그인해주세요.");
+        auth.signOut();
+        return;
+      }
+
+      if (isAdmin) {
+        fabBtn.style.display = "flex";
+        fabBtn.style.alignItems = "center";
+        fabBtn.style.justifyContent = "center";
+        loginLink.style.display = "none";
+        logoutLink.style.display = "block";
+      } else {
+        fabBtn.style.display = "none";
+        loginLink.style.display = "block";
+        logoutLink.style.display = "none";
+      }
+    });
+  }
+
+  saveBtn.addEventListener("click", async () => {
+    const file = document.getElementById("inputImage").files[0];
+    const title = document.getElementById("inputTitle").value.trim();
+    const cat = document.getElementById("inputCat").value;
+
+    if (!file || !title) {
+      statusMsg.textContent = "이미지와 제목을 모두 입력해주세요.";
+      return;
+    }
+
+    saveBtn.disabled = true;
+    statusMsg.textContent = "업로드 중...";
+
+    try {
+      // 1. Storage에 이미지 업로드
+      const fileRef = storage.ref().child(`uploads/${Date.now()}_${file.name}`);
+      await fileRef.put(file);
+      const imageUrl = await fileRef.getDownloadURL();
+
+      // 2. Firestore에 데이터 저장
+      await db.collection("projects").add({
+        title,
+        cat,
+        imageUrl,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // 3. 화면에 바로 반영
+      projects.unshift({ title, cat, img: imageUrl, grad: null });
+      render(currentFilter);
+
+      statusMsg.textContent = "저장 완료!";
+      setTimeout(() => {
+        modalOverlay.classList.remove("open");
+        statusMsg.textContent = "";
+        document.getElementById("inputImage").value = "";
+        document.getElementById("inputTitle").value = "";
+      }, 600);
+
+    } catch (e) {
+      console.error(e);
+      statusMsg.textContent = "저장 실패: " + e.message;
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
 </script>
 
 </body>
