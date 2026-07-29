@@ -27,46 +27,16 @@
     color: var(--ink);
     font-family: 'Pretendard Variable', Pretendard, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
-
-    <!-- 포트폴리오 유닛 (예시버튼) -->
-<button id="openModalBtn" class="unit-button">프로젝트 유닛 클릭!</button>
-
-<!-- 모달 전체 배경 및 래퍼 -->
-<div id="projectModal" class="modal-overlay">
-  <!-- 실제 종이처럼 올라올 모달 콘텐츠 영역 -->
-  <div class="modal-content">
-    <button id="closeModalBtn" class="close-btn">✕</button>
-    
-    <!-- 상세 내용 시작 -->
-    <div class="modal-header">
-      <h1>쌀 수분 진정 시리즈</h1>
-      <p>View details</p>
-    </div>
-    
-    <div class="modal-body">
-      <!-- 내용이 길어지도록 임시 텍스트 추가 -->
-      <h2>일정</h2>
-      <p>05/12/2026 → 06/15/2026</p>
-      
-      <h2>카테고리</h2>
-      <span class="badge">UI 디자인</span>
-      
-      <div class="notion-style-box">
-        🎨 260512_쌀수분 선 (Figma)
-      </div>
-      
-      <!-- 스크롤 테스트를 위한 여백 -->
-      <div style="height: 1000px; margin-top: 50px; background: linear-gradient(#f9f9f9, #ececec); border-radius: 8px; padding: 20px;">
-      </div>
-    </div>
-    <!-- 상세 내용 끝 -->
-  </div>
-</div>
+  }
+  
+  /* 💡 추가된 부분: 모달이 열렸을 때 배경 스크롤 방지 */
+  body.modal-open {
+    overflow: hidden; 
   }
 
   a { color: inherit; text-decoration: none; }
 
-  /* ---------- Banner (GIF/이미지 넣는 자리) ---------- */
+  /* ---------- Banner ---------- */
   .banner {
     position: relative;
     width: 100%;
@@ -76,14 +46,12 @@
     overflow: hidden;
     background: linear-gradient(135deg, #eef1e9, #dfe6da);
   }
-
   .banner img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
   }
-
   .banner .banner-placeholder {
     position: absolute;
     inset: 0;
@@ -96,307 +64,181 @@
     font-size: 13px;
     text-align: center;
   }
-
   .banner .banner-placeholder b {
     color: var(--ink);
     font-size: 14px;
   }
 
   /* ---------- Title area ---------- */
-  .title-area {
-    padding: 28px 8vw 16px;
-  }
-
-  .title-area h1 {
-    margin: 0;
-    font-size: clamp(30px, 4vw, 44px);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
+  .title-area { padding: 28px 8vw 16px; }
+  .title-area h1 { margin: 0; font-size: clamp(30px, 4vw, 44px); font-weight: 800; letter-spacing: -0.02em; }
 
   /* ---------- Tab / filter row ---------- */
   .tabbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-    padding: 28px 8vw 20px;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 32px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding: 28px 8vw 20px; border-bottom: 1px solid var(--line); margin-bottom: 32px;
   }
-
-  .tabs {
-    display: flex;
-    gap: 8px;
-  }
-
+  .tabs { display: flex; gap: 8px; }
   .tabs button {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 8px 14px;
-    border-radius: 999px;
-    border: none;
-    background: transparent;
-    color: var(--ink-soft);
-    cursor: pointer;
+    display: flex; align-items: center; gap: 6px; font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 8px 14px; border-radius: 999px; border: none; background: transparent; color: var(--ink-soft); cursor: pointer;
   }
-
-  .tabs button.active {
-    background: #f1efe9;
-    color: var(--ink);
-  }
-
-  .filter {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
+  .tabs button.active { background: #f1efe9; color: var(--ink); }
+  
+  .filter { display: flex; gap: 8px; flex-wrap: wrap; }
   .filter button {
-    font-family: inherit;
-    font-size: 13px;
-    padding: 7px 15px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--ink-soft);
-    cursor: pointer;
-    transition: all .15s ease;
+    font-family: inherit; font-size: 13px; padding: 7px 15px; border-radius: 999px;
+    border: 1px solid var(--line); background: transparent; color: var(--ink-soft); cursor: pointer; transition: all .15s ease;
   }
-
-  .filter button.active,
-  .filter button:hover {
-    background: var(--ink);
-    border-color: var(--ink);
-    color: #fff;
-  }
+  .filter button.active, .filter button:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
 
   /* ---------- Gallery grid ---------- */
-  .catalog {
-    padding: 0 8vw 120px;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 20px;
-  }
-
+  .catalog { padding: 0 8vw 120px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
   .card {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    background: var(--card-bg);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 1px 2px rgba(33,31,28,0.04);
-    transition: transform .2s ease, box-shadow .2s ease;
+    position: relative; aspect-ratio: 4 / 3; background: var(--card-bg); border: 1px solid var(--line);
+    border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(33,31,28,0.04); transition: transform .2s ease, box-shadow .2s ease;
   }
-
-  .card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 16px 30px -18px rgba(33,31,28,0.35);
-  }
-
-  .card-thumb {
-    position: absolute;
-    inset: 0;
-    background: var(--line);
-  }
-
-  .card-thumb img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
+  .card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -18px rgba(33,31,28,0.35); }
+  .card-thumb { position: absolute; inset: 0; background: var(--line); }
+  .card-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .card-body {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    padding: 10px 14px 12px;
+    position: absolute; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 10px 14px 12px;
   }
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.4;
-  }
+  .card-title { font-size: 15px; font-weight: 600; line-height: 1.4; }
 
   /* ---------- Footer ---------- */
   footer {
-    padding: 32px 8vw 60px;
-    border-top: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-    color: var(--ink-soft);
-    font-size: 13px;
+    padding: 32px 8vw 60px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; flex-wrap: wrap;
+    gap: 12px; color: var(--ink-soft); font-size: 13px;
   }
+  @media (max-width: 640px) { .catalog { padding: 0 6vw 80px; } .title-area, .tabbar { padding-inline: 6vw; } }
 
-  @media (max-width: 640px) {
-    .catalog { padding: 0 6vw 80px; }
-    .title-area, .tabbar { padding-inline: 6vw; }
-  }
-
-  /* ---------- Floating Add Button ---------- */
+  /* ---------- Floating Add Button & Login ---------- */
   .fab {
-    position: fixed;
-    right: 28px;
-    bottom: 28px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--ink);
-    color: #fff;
-    border: none;
-    font-size: 26px;
-    line-height: 1;
-    cursor: pointer;
-    box-shadow: 0 12px 28px -10px rgba(33,31,28,0.5);
-    z-index: 40;
-    transition: transform .15s ease;
+    position: fixed; right: 28px; bottom: 28px; width: 56px; height: 56px; border-radius: 50%;
+    background: var(--ink); color: #fff; border: none; font-size: 26px; line-height: 1; cursor: pointer;
+    box-shadow: 0 12px 28px -10px rgba(33,31,28,0.5); z-index: 40; transition: transform .15s ease; display: none;
   }
-
   .fab:hover { transform: scale(1.06); }
+  .login-link {
+    position: fixed; right: 28px; bottom: 28px; z-index: 39; font-size: 12px; color: var(--ink-soft); background: #fff;
+    border: 1px solid var(--line); padding: 8px 14px; border-radius: 999px; cursor: pointer; box-shadow: 0 6px 16px -8px rgba(33,31,28,0.3);
+  }
+  .login-link:hover { color: var(--ink); }
+  .logout-link { position: fixed; right: 96px; bottom: 42px; z-index: 41; font-size: 12px; color: var(--ink-soft); cursor: pointer; text-decoration: underline; display: none; }
 
   /* ---------- Upload Modal ---------- */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(33,31,28,0.45);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-    padding: 20px;
-  }
-
-  .modal-overlay.open { display: flex; }
-
-  .modal {
-    width: 100%;
-    max-width: 420px;
-    background: #fff;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4);
-  }
-
-  .modal h3 {
-    margin: 0 0 18px;
-    font-size: 18px;
-    font-weight: 800;
-  }
-
-  .modal label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    margin: 14px 0 6px;
-  }
-
-  .modal input[type="text"],
-  .modal select {
-    width: 100%;
-    font-family: inherit;
-    font-size: 14px;
-    padding: 10px 12px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    background: #fdfcfa;
-  }
-
-  .modal input[type="file"] {
-    width: 100%;
-    font-size: 13px;
-  }
-
-  .modal .modal-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 22px;
-  }
-
-  .modal button.primary,
-  .modal button.secondary {
-    flex: 1;
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 700;
-    padding: 11px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: none;
-  }
-
+  .modal-overlay-upload { position: fixed; inset: 0; background: rgba(33,31,28,0.45); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+  .modal-overlay-upload.open { display: flex; }
+  .modal { width: 100%; max-width: 420px; background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4); }
+  .modal h3 { margin: 0 0 18px; font-size: 18px; font-weight: 800; }
+  .modal label { display: block; font-size: 12px; font-weight: 600; color: var(--ink-soft); margin: 14px 0 6px; }
+  .modal input[type="text"], .modal select { width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fdfcfa; }
+  .modal input[type="file"] { width: 100%; font-size: 13px; }
+  .modal .modal-actions { display: flex; gap: 10px; margin-top: 22px; }
+  .modal button.primary, .modal button.secondary { flex: 1; font-family: inherit; font-size: 14px; font-weight: 700; padding: 11px; border-radius: 8px; cursor: pointer; border: none; }
   .modal button.primary { background: var(--ink); color: #fff; }
   .modal button.primary:disabled { opacity: .5; cursor: not-allowed; }
   .modal button.secondary { background: #f1efe9; color: var(--ink); }
+  .modal .status-msg { font-size: 12px; color: var(--ink-soft); margin-top: 10px; min-height: 16px; }
 
-  .modal .status-msg {
-    font-size: 12px;
-    color: var(--ink-soft);
-    margin-top: 10px;
-    min-height: 16px;
+  /* ============================================================ */
+  /* 💡 1. 추가된 부분: 프로젝트 상세 보기 모달 디자인 (CSS) */
+  /* ============================================================ */
+  .project-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); 
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    overflow-y: auto; /* 오버레이 자체 스크롤 가능 */
   }
 
-  /* ---------- Login ---------- */
-  .fab { display: none; } /* 로그인 전엔 숨김 */
+  .project-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
 
-  .login-link {
-    position: fixed;
-    right: 28px;
-    bottom: 28px;
-    z-index: 39;
-    font-size: 12px;
-    color: var(--ink-soft);
-    background: #fff;
+  .project-modal-content {
+    background-color: #ffffff;
+    width: 90%; /* 화면 꽉 채우지 않고 양옆 10% 여백 생성 */
+    max-width: 900px;
+    min-height: calc(100vh - 80px); /* 화면을 꽉 채우지 않도록 여백 공간 계산 */
+    margin: 40px auto; /* 위, 아래 40px 여백 및 중앙 정렬 */
+    padding: 40px 60px 60px;
+    border-radius: 20px; /* 상하좌우 모든 모서리 둥글게(라운드) 처리 */
+    position: relative;
+    transform: translateY(100px); /* 아래에 숨어있다가 */
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  /* 모바일 화면에서는 여백을 조금 줄여줍니다 */
+  @media (max-width: 640px) {
+    .project-modal-content {
+      width: 92%;
+      padding: 30px 20px 40px;
+    }
+  }
+
+  .project-modal-overlay.active .project-modal-content {
+    transform: translateY(0); /* 위로 스르륵 올라옴 */
+  }
+
+  /* 💡 X버튼 래퍼: 스크롤해도 화면 상단에 고정됨 (Sticky) */
+  .modal-sticky-header {
+    position: sticky;
+    top: 30px; /* 스크롤을 내려도 화면 최상단에서 30px 띄워서 고정 */
+    display: flex;
+    justify-content: flex-end;
+    z-index: 10;
+    height: 0; /* 공간을 차지해 아래 텍스트를 밀어내지 않도록 높이 0 설정 */
+  }
+
+  .close-project-btn {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
     border: 1px solid var(--line);
-    padding: 8px 14px;
-    border-radius: 999px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%; /* 동그란 버튼 */
+    font-size: 18px;
     cursor: pointer;
-    box-shadow: 0 6px 16px -8px rgba(33,31,28,0.3);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08); /* 버튼에 약간의 그림자 추가 */
+    transition: all 0.2s ease;
   }
-
-  .login-link:hover { color: var(--ink); }
-
-  .logout-link {
-    position: fixed;
-    right: 96px;
-    bottom: 42px;
-    z-index: 41;
-    font-size: 12px;
-    color: var(--ink-soft);
-    cursor: pointer;
-    text-decoration: underline;
-    display: none;
+  
+  .close-project-btn:hover {
+    background: #ffffff;
+    transform: scale(1.05); /* 마우스 올렸을 때 살짝 커지는 효과 */
+  }
+  
+  .badge {
+    display: inline-block;
+    background: #f1efe9;
+    color: var(--ink);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 20px;
   }
 </style>
 </head>
 <body>
 
-<!--
-  ▼ 배너(GIF) 자리
-  images 폴더 안에 banner.gif 파일을 넣으면 자동으로 여기 나옵니다.
-  파일이 없으면 아래 placeholder 문구가 대신 보여요.
--->
 <div class="banner">
-  <img src="images/banner.gif" alt="배너"
-       onerror="this.style.display='none'; document.getElementById('bannerPlaceholder').style.display='flex';">
+  <img src="images/banner.gif" alt="배너" onerror="this.style.display='none'; document.getElementById('bannerPlaceholder').style.display='flex';">
   <div class="banner-placeholder" id="bannerPlaceholder" style="display:none;">
     <b>배너 GIF를 넣어주세요</b>
     <span>images 폴더에 banner.gif 파일을 넣으면 여기에 표시됩니다</span>
@@ -425,24 +267,18 @@
   <div>Built with plain HTML — hosted on GitHub Pages.</div>
 </footer>
 
-<!-- 플러스 버튼 -->
 <button class="fab" id="fabBtn" title="새 프로젝트 추가">+</button>
-
-<!-- 로그인 / 로그아웃 -->
 <div class="login-link" id="loginLink">🔑 구글로 로그인</div>
 <div class="logout-link" id="logoutLink">로그아웃</div>
 
 <!-- 업로드 모달 -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay-upload" id="modalOverlay">
   <div class="modal">
     <h3>새 프로젝트 추가</h3>
-
     <label>이미지</label>
     <input type="file" id="inputImage" accept="image/*">
-
     <label>제목</label>
     <input type="text" id="inputTitle" placeholder="예: 우드 트레이 시리즈">
-
     <label>카테고리</label>
     <select id="inputCat">
       <option value="living">리빙</option>
@@ -450,12 +286,39 @@
       <option value="device">소형가전</option>
       <option value="etc">기타</option>
     </select>
-
     <div class="modal-actions">
       <button class="secondary" id="cancelBtn">취소</button>
       <button class="primary" id="saveBtn">저장</button>
     </div>
     <div class="status-msg" id="statusMsg"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 💡 2. 추가된 부분: 프로젝트 상세 보기 모달 뼈대 (HTML) -->
+<!-- ============================================================ -->
+<div id="projectModal" class="project-modal-overlay">
+  <div class="project-modal-content">
+    
+    <!-- 💡 X 버튼을 sticky(고정) 래퍼로 감싸서 수정 -->
+    <div class="modal-sticky-header">
+      <button id="closeProjectBtn" class="close-project-btn">✕</button>
+    </div>
+    
+    <div class="modal-header">
+      <h1 id="modalProjectTitle" style="font-size: 32px; font-weight: 800; margin-bottom: 8px;">프로젝트 제목</h1>
+      <p style="color: var(--ink-soft); margin-top: 0;">View details</p>
+    </div>
+    
+    <div class="modal-body" style="margin-top: 40px;">
+      <span class="badge" id="modalProjectCat">카테고리</span>
+      
+      <!-- 스크롤을 확인할 수 있는 긴 더미 공간 -->
+      <div style="height: 1200px; margin-top: 20px; background: linear-gradient(#f9f9f9, #e9e5db); border-radius: 12px; padding: 40px; color: var(--ink-soft); text-align: center;">
+        스크롤을 아래로 쭉 내려보세요.<br><br>
+        실제 포트폴리오 이미지를 넣을 때 창이 위로 스르륵 밀려 올라가는 효과를 확인하실 수 있습니다!
+      </div>
+    </div>
   </div>
 </div>
 
@@ -466,10 +329,6 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
-  // ============================================================
-  // ▼ Firebase 설정값 — Firebase 콘솔에서 발급받은 값으로 교체하세요
-  //   (프로젝트 설정 → 일반 → 내 앱 → SDK 설정 및 구성)
-  // ============================================================
   const firebaseConfig = {
     apiKey: "AIzaSyAOAgQnvj4zs3bQM2dyoH69AgXk8WANOsA",
     authDomain: "designprojectsian.firebaseapp.com",
@@ -490,14 +349,11 @@
     auth = firebase.auth();
     firebaseReady = true;
   } catch (e) {
-    console.warn("Firebase 설정이 아직 채워지지 않았어요. 플러스 버튼 저장 기능은 설정 완료 후 작동합니다.", e);
+    console.warn("Firebase 에러", e);
   }
 </script>
 
 <script>
-  // 기본 프로젝트 목록 (고정)
-  // img: images/01.jpg 처럼 실제 파일을 넣으면 자동으로 사진이 나오고,
-  //      파일이 없으면 grad 색상으로 대체됩니다.
   const projects = [
     { no: "01", title: "쌀 수분 진정 시리즈", cat: "beauty", img: "images/01.jpg", grad: ["#e7d9c4", "#b8a184"] },
     { no: "02", title: "넥쿨러",              cat: "device", img: "images/02.jpg", grad: ["#c9d6e0", "#7c93a8"] },
@@ -506,16 +362,7 @@
     { no: "05", title: "컴팩트 마우스 키보드 세트", cat: "device", img: "images/05.jpg", grad: ["#e2e2e2", "#9a9a9a"] },
     { no: "06", title: "강력 자석 수납 시리즈",  cat: "living", img: "images/06.jpg", grad: ["#ece0cf", "#c2a76e"] },
     { no: "07", title: "스테인리스 조리 와이어 시리즈", cat: "living", img: "images/07.jpg", grad: ["#d9dede", "#8b9494"] },
-    { no: "08", title: "접이식 카트",          cat: "living", img: "images/08.jpg", grad: ["#e6d8c8", "#a98b63"] },
-    { no: "09", title: "핸드 밴딩 샤워볼",      cat: "beauty", img: "images/09.jpg", grad: ["#f0dbe3", "#c98ba4"] },
-    { no: "10", title: "퍼퓸바",              cat: "beauty", img: "images/10.jpg", grad: ["#ece5da", "#b9a98a"] },
-    { no: "11", title: "코튼 캔들",            cat: "beauty", img: "images/11.jpg", grad: ["#f2e9df", "#cdb896"] },
-    { no: "12", title: "차량용 디퓨저",        cat: "beauty", img: "images/12.jpg", grad: ["#dde3ea", "#8595ac"] },
-    { no: "13", title: "블렌드티",            cat: "etc",    img: "images/13.jpg", grad: ["#e3ddc9", "#a89d6c"] },
-    { no: "14", title: "열탕 소독 가습기",      cat: "device", img: "images/14.jpg", grad: ["#d6e2df", "#6f9a8f"] },
-    { no: "15", title: "PengCat Puzzle",     cat: "etc",    img: "images/15.jpg", grad: ["#dbe2f0", "#8092c2"] },
-    { no: "16", title: "JAJU 상세페이지 템플릿", cat: "etc",    img: "images/16.jpg", grad: ["#e8e4dc", "#a9a196"] },
-    { no: "17", title: "Wanderboard",        cat: "etc",    img: "images/17.jpg", grad: ["#e0e6da", "#8fa07b"] },
+    { no: "08", title: "접이식 카트",          cat: "living", img: "images/08.jpg", grad: ["#e6d8c8", "#a98b63"] }
   ];
 
   const grid = document.getElementById("grid");
@@ -523,9 +370,7 @@
 
   function cardHTML(p) {
     const bg = p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db";
-    const imgTag = p.img
-      ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">`
-      : "";
+    const imgTag = p.img ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">` : "";
     return `
       <div class="card-thumb" style="${bg}">
         ${imgTag}
@@ -545,6 +390,9 @@
         const card = document.createElement("a");
         card.className = "card";
         card.href = "#";
+        // 💡 카테고리 정보를 쉽게 꺼내쓰기 위해 HTML에 숨겨둠
+        card.dataset.title = p.title;
+        card.dataset.cat = p.cat;
         card.innerHTML = cardHTML(p);
         grid.appendChild(card);
       });
@@ -561,8 +409,54 @@
   render("all");
 
   // ============================================================
-  // Firestore에서 사용자가 추가한 프로젝트 불러오기
+  // 💡 3. 추가된 부분: 카드를 누르면 상세 모달이 뜨는 스크립트
   // ============================================================
+  const projectModal = document.getElementById('projectModal');
+  const closeProjectBtn = document.getElementById('closeProjectBtn');
+  const modalProjectTitle = document.getElementById('modalProjectTitle');
+  const modalProjectCat = document.getElementById('modalProjectCat');
+
+  // grid 안에 있는 카드를 클릭했을 때 실행
+  grid.addEventListener('click', (e) => {
+    const card = e.target.closest('.card');
+    if (!card) return; // 클릭한 곳이 카드가 아니면 무시
+    
+    e.preventDefault(); // 스크롤 맨 위로 튀는 현상 방지
+
+    // 클릭한 카드의 제목과 카테고리를 모달창에 채워넣음
+    modalProjectTitle.textContent = card.dataset.title;
+    
+    // 카테고리 이름을 한글로 변환해서 표시
+    let catName = card.dataset.cat;
+    if(catName === "living") catName = "리빙";
+    else if(catName === "beauty") catName = "뷰티";
+    else if(catName === "device") catName = "소형가전";
+    else if(catName === "etc") catName = "기타";
+    modalProjectCat.textContent = catName;
+
+    // 모달창 띄우기
+    projectModal.classList.add('active');
+    document.body.classList.add('modal-open');
+  });
+
+  // 모달창 닫기 함수
+  const closeProjectModal = () => {
+    projectModal.classList.remove('active');
+    document.body.classList.remove('modal-open');
+  };
+
+  // X 버튼 누르면 닫기
+  closeProjectBtn.addEventListener('click', closeProjectModal);
+  
+  // 모달창 밖의 어두운 배경 누르면 닫기
+  projectModal.addEventListener('click', (e) => {
+    if (e.target === projectModal) {
+      closeProjectModal();
+    }
+  });
+
+
+  /* 기존 Firebase 업로드 기능 코드들... (그대로 유지) */
   async function loadUserProjects() {
     if (!firebaseReady) return;
     try {
@@ -578,71 +472,33 @@
   }
   loadUserProjects();
 
-  // ============================================================
-  // 플러스 버튼 / 모달 / 저장 로직
-  // ============================================================
   const fabBtn = document.getElementById("fabBtn");
-  const modalOverlay = document.getElementById("modalOverlay");
+  const modalOverlayUpload = document.getElementById("modalOverlay");
   const cancelBtn = document.getElementById("cancelBtn");
   const saveBtn = document.getElementById("saveBtn");
   const statusMsg = document.getElementById("statusMsg");
 
-  fabBtn.addEventListener("click", () => {
-    modalOverlay.classList.add("open");
-  });
+  fabBtn.addEventListener("click", () => { modalOverlayUpload.classList.add("open"); });
+  cancelBtn.addEventListener("click", () => { modalOverlayUpload.classList.remove("open"); statusMsg.textContent = ""; });
 
-  cancelBtn.addEventListener("click", () => {
-    modalOverlay.classList.remove("open");
-    statusMsg.textContent = "";
-  });
-
-  // ============================================================
-  // 로그인 / 로그아웃 (구글 로그인)
-  // ============================================================
   const loginLink = document.getElementById("loginLink");
   const logoutLink = document.getElementById("logoutLink");
 
   loginLink.addEventListener("click", async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
-    try {
-      await auth.signInWithPopup(provider);
-    } catch (e) {
-      console.error(e);
-      alert("로그인에 실패했어요: " + e.message);
-    }
+    try { await auth.signInWithPopup(provider); } catch (e) { alert("로그인 실패: " + e.message); }
   });
+  logoutLink.addEventListener("click", () => { auth.signOut(); });
 
-  logoutLink.addEventListener("click", () => {
-    auth.signOut();
-  });
-
-  // ============================================================
-  // 관리자 이메일 화이트리스트
-  // ============================================================
   const ADMIN_EMAILS = ["imddattj@gmail.com"];
-
-  // 로그인 상태에 따라 + 버튼 노출
   if (firebaseReady) {
     auth.onAuthStateChanged((user) => {
       const isAdmin = user && ADMIN_EMAILS.includes(user.email);
-
-      if (user && !isAdmin) {
-        // 허용되지 않은 계정으로 로그인한 경우 바로 로그아웃
-        alert("관리자 계정이 아니에요. 다른 구글 계정으로 로그인해주세요.");
-        auth.signOut();
-        return;
-      }
-
+      if (user && !isAdmin) { alert("관리자 계정이 아닙니다."); auth.signOut(); return; }
       if (isAdmin) {
-        fabBtn.style.display = "flex";
-        fabBtn.style.alignItems = "center";
-        fabBtn.style.justifyContent = "center";
-        loginLink.style.display = "none";
-        logoutLink.style.display = "block";
+        fabBtn.style.display = "flex"; loginLink.style.display = "none"; logoutLink.style.display = "block";
       } else {
-        fabBtn.style.display = "none";
-        loginLink.style.display = "block";
-        logoutLink.style.display = "none";
+        fabBtn.style.display = "none"; loginLink.style.display = "block"; logoutLink.style.display = "none";
       }
     });
   }
@@ -651,47 +507,22 @@
     const file = document.getElementById("inputImage").files[0];
     const title = document.getElementById("inputTitle").value.trim();
     const cat = document.getElementById("inputCat").value;
+    if (!file || !title) { statusMsg.textContent = "이미지와 제목을 입력해주세요."; return; }
 
-    if (!file || !title) {
-      statusMsg.textContent = "이미지와 제목을 모두 입력해주세요.";
-      return;
-    }
-
-    saveBtn.disabled = true;
-    statusMsg.textContent = "업로드 중...";
-
+    saveBtn.disabled = true; statusMsg.textContent = "업로드 중...";
     try {
-      // 1. Storage에 이미지 업로드
       const fileRef = storage.ref().child(`uploads/${Date.now()}_${file.name}`);
       await fileRef.put(file);
       const imageUrl = await fileRef.getDownloadURL();
-
-      // 2. Firestore에 데이터 저장
-      await db.collection("projects").add({
-        title,
-        cat,
-        imageUrl,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-
-      // 3. 화면에 바로 반영
+      await db.collection("projects").add({ title, cat, imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
       projects.unshift({ title, cat, img: imageUrl, grad: null });
       render(currentFilter);
-
       statusMsg.textContent = "저장 완료!";
       setTimeout(() => {
-        modalOverlay.classList.remove("open");
-        statusMsg.textContent = "";
-        document.getElementById("inputImage").value = "";
-        document.getElementById("inputTitle").value = "";
+        modalOverlayUpload.classList.remove("open"); statusMsg.textContent = "";
+        document.getElementById("inputImage").value = ""; document.getElementById("inputTitle").value = "";
       }, 600);
-
-    } catch (e) {
-      console.error(e);
-      statusMsg.textContent = "저장 실패: " + e.message;
-    } finally {
-      saveBtn.disabled = false;
-    }
+    } catch (e) { statusMsg.textContent = "저장 실패: " + e.message; } finally { saveBtn.disabled = false; }
   });
 </script>
 
