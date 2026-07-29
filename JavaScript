@@ -1,0 +1,29 @@
+// 요소 선택하기
+const openBtn = document.getElementById('openModalBtn');
+const closeModalBtn = document.getElementById('closeModalBtn');
+const modalOverlay = document.getElementById('projectModal');
+const body = document.body;
+
+// 유닛 클릭 시 모달 열기
+openBtn.addEventListener('click', () => {
+  // 모달 활성화 클래스 추가
+  modalOverlay.classList.add('active');
+  // 뒷배경 스크롤 방지
+  body.classList.add('modal-open');
+});
+
+// 닫기 기능 함수
+const closeModal = () => {
+  modalOverlay.classList.remove('active');
+  body.classList.remove('modal-open');
+};
+
+// 'X' 버튼 클릭 시 모달 닫기
+closeModalBtn.addEventListener('click', closeModal);
+
+// 배경(오버레이) 클릭 시 모달 닫기 (사용성 향상)
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) {
+    closeModal();
+  }
+});
