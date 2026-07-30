@@ -8,8 +8,6 @@
 <link rel="stylesheet" as="style" crossorigin
   href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
   
-<!-- 💡 Cropper.js (이미지 자르기/조절) CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 <!-- 💡 Quill.js (블로그형 에디터) CSS -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 
@@ -163,20 +161,18 @@
   /* ============================================================ */
   .modal-overlay-upload { 
     position: fixed; inset: 0; background: rgba(33,31,28,0.45); display: none; align-items: flex-start; justify-content: center; z-index: 50; 
-    /* 상단 여백만 남기고 꽉 채우기 위해 padding 수정 */
     padding: 60px 0 0 0; 
     backdrop-filter: blur(2px);
   }
   .modal-overlay-upload.open { display: flex; }
   
   .notion-modal { 
-    /* 너비와 높이를 화면에 꽉 차게 변경, 둥근 모서리는 상단에만 적용 */
     width: 100%; height: 100%; max-width: 900px; background: #fff; border-radius: 12px 12px 0 0; 
     box-shadow: 0 -10px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; position: relative;
     overflow-y: auto;
   }
 
-  /* 헤더 이미지 영역 추가 */
+  /* 헤더 이미지 영역 */
   .notion-header-image-container {
     width: 100%; height: 30vh; min-height: 200px; background: #f3f3f2; position: relative;
     display: flex; align-items: center; justify-content: center; overflow: hidden;
@@ -190,7 +186,7 @@
   }
   .notion-header-image-btn:hover { background: #fff; }
 
-  /* 컨텐츠 영역 패딩 조정 */
+  /* 컨텐츠 영역 */
   .notion-modal-content-area { padding: 40px 8vw 80px; display: flex; flex-direction: column; flex: 1; }
 
   .notion-title-input { 
@@ -204,7 +200,7 @@
   .notion-property-label { width: 140px; color: #767670; display: flex; align-items: center; gap: 8px; font-weight: 500; height: 28px; }
   .notion-property-value { flex: 1; }
   
-  /* 💡 추가된 부분: 카테고리 다중 선택 칩 디자인 */
+  /* 💡 카테고리 다중 선택 칩 디자인 */
   .category-tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag-chip {
     padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 500;
@@ -221,11 +217,7 @@
   .notion-select:hover, .notion-file:hover { background: #f3f3f2; }
   input[type="text"].notion-select { cursor: text; }
   
-  /* Cropper.js 스타일 */
-  .cropper-wrapper { width: 100%; max-height: 400px; background: #f3f3f2; overflow: hidden; display: none; border-radius: 8px; margin-top: 8px;}
-  .cropper-wrapper img { max-width: 100%; display: block; }
-  
-  /* Quill 에디터 (본문) 스타일 수정 */
+  /* Quill 에디터 (본문) 스타일 */
   #editor-container { 
     height: 400px; 
     font-family: inherit; font-size: 16px; color: var(--ink);
@@ -236,13 +228,6 @@
   .ql-editor.ql-blank::before { left: 0; color: #ccc; font-style: normal; }
 
   .notion-divider { border: none; border-top: 1px solid #ededeb; margin: 16px 0 24px 0; width: 100%; }
-  
-  /* 본문 작성 영역 (Textarea) 추가 */
-  .notion-body-input {
-    width: 100%; min-height: 200px; border: none; outline: none; resize: vertical;
-    font-family: inherit; font-size: 16px; line-height: 1.6; color: var(--ink); flex: 1;
-  }
-  .notion-body-input::placeholder { color: #ccc; }
 
   .notion-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 40px; }
   .notion-btn-save, .notion-btn-cancel { 
@@ -288,7 +273,6 @@
   }
   .close-project-btn:hover { background: #ffffff; transform: scale(1.05); }
   
-  /* 💡 뱃지 스타일 개선 */
   .badge {
     display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-right: 8px; margin-bottom: 8px;
   }
@@ -332,40 +316,59 @@
 <!-- ============================================================ -->
 <div class="modal-overlay-upload" id="modalOverlay">
   <div class="notion-modal">
-    <!-- 💡 헤더 이미지 영역 (Cropper 적용) -->
-    <div class="notion-header-image-container" style="background: transparent;">
+    <!-- 💡 헤더 이미지 영역 (Cropper 없음) -->
+    <div class="notion-header-image-container" id="headerImageContainer">
       <button class="notion-header-image-btn" id="btnHeaderImg" onclick="document.getElementById('inputHeaderImage').click()">🖼 커버 추가 (선택)</button>
       <input type="file" id="inputHeaderImage" accept="image/*" style="display: none;">
-      <!-- 크로퍼가 들어갈 컨테이너 -->
-      <div id="headerCropperWrapper" style="width: 100%; height: 30vh; min-height: 200px; display: none; background: #f3f3f2;">
-        <img id="headerImgPreview" src="" alt="헤더 이미지 미리보기">
-      </div>
+      <img id="headerImgPreview" class="notion-header-image-preview" src="" alt="헤더 이미지 미리보기">
     </div>
 
-    <div class="notion-modal-content-area" style="padding: 40px 80px;">
+    <div class="notion-modal-content-area">
       <input type="text" id="inputTitle" class="notion-title-input" placeholder="제목 없음">
 
       <div class="notion-properties">
+        <!-- 💡 복구된 카테고리 다중 선택 영역 -->
         <div class="notion-property-row">
-        <div class="notion-property-label">🖼️ 썸네일(커버)</div>
-        <div class="notion-property-value">
-          <input type="file" id="inputImage" class="notion-file" accept="image/*">
-          <div class="cropper-wrapper" id="thumbCropperWrapper">
-            <img id="thumbImgPreview" src="" alt="썸네일 미리보기">
+          <div class="notion-property-label">📂 카테고리</div>
+          <div class="notion-property-value">
+            <div class="category-tags" id="categoryTags">
+              <div class="tag-chip" data-value="UX 기획">UX 기획</div>
+              <div class="tag-chip" data-value="UI 디자인">UI 디자인</div>
+              <div class="tag-chip" data-value="디자인 시스템">디자인 시스템</div>
+              <div class="tag-chip" data-value="협업·문제해결">협업·문제해결</div>
+              <div class="tag-chip" data-value="AI 활용">AI 활용</div>
+              <div class="tag-chip" data-value="반응형·모바일">반응형·모바일</div>
+            </div>
           </div>
-          <div style="font-size: 12px; color: var(--ink-soft); margin-top: 4px;">* 마우스 휠로 확대/축소, 드래그로 위치를 조정하세요.</div>
+        </div>
+        
+        <!-- 💡 복구된 작업시간 입력란 -->
+        <div class="notion-property-row">
+          <div class="notion-property-label">⏱️ 작업시간</div>
+          <div class="notion-property-value">
+            <input type="text" id="inputTime" class="notion-select" placeholder="예: 2026.05 - 2026.06">
+          </div>
+        </div>
+
+        <div class="notion-property-row">
+          <div class="notion-property-label">🖼️ 썸네일(커버)</div>
+          <div class="notion-property-value">
+            <input type="file" id="inputImage" class="notion-file" accept="image/*">
+            <div style="margin-top: 8px;">
+               <img id="thumbImgPreview" src="" alt="썸네일 미리보기" style="max-width: 100%; max-height: 300px; display: none; border-radius: 8px;">
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <hr class="notion-divider">
+      <hr class="notion-divider">
 
-    <!-- 💡 실제 글(본문) 작성 영역 (블로그형 에디터) -->
-    <div style="width: 100%;">
-      <div id="editor-container"></div>
-    </div>
+      <!-- 💡 실제 글(본문) 작성 영역 (블로그형 에디터) -->
+      <div style="width: 100%;">
+        <div id="editor-container"></div>
+      </div>
 
-    <div class="notion-modal-actions">
+      <div class="notion-modal-actions">
         <button class="notion-btn-cancel" id="cancelBtn">취소</button>
         <button class="notion-btn-save" id="saveBtn">저장</button>
       </div>
@@ -406,8 +409,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<!-- 💡 Cropper.js & Quill.js JS 로드 -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<!-- 💡 Quill.js JS 로드 -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 
 <script>
@@ -435,7 +437,6 @@
 </script>
 
 <script>
-  // 기존 프로젝트들의 더미 데이터 (임시 카테고리 적용)
   const projects = [
     { no: "01", title: "쌀 수분 진정 시리즈", cat: "UI 디자인, 반응형·모바일", time: "2026.05 - 2026.06", img: "images/01.jpg", grad: ["#e7d9c4", "#b8a184"] },
     { no: "02", title: "넥쿨러 앱 리디자인", cat: "UX 기획, AI 활용", time: "2026.04", img: "images/02.jpg", grad: ["#c9d6e0", "#7c93a8"] },
@@ -444,16 +445,14 @@
   ];
 
   const grid = document.getElementById("grid");
-  let currentView = 'gallery'; // 현재 활성화된 뷰
+  let currentView = 'gallery'; 
 
-  // 💡 뷰 렌더링 함수 (갤러리 / 보드 / 타임라인)
   function render(view = currentView) {
     currentView = view;
     grid.innerHTML = "";
     grid.className = view === 'gallery' ? 'grid' : 'view-container'; 
     
     if (view === 'gallery') {
-      // 1. 갤러리 뷰
       projects.forEach(p => {
         const card = document.createElement("a");
         card.className = "card";
@@ -473,13 +472,11 @@
       });
 
     } else if (view === 'category') {
-      // 2. 카테고리 보드 뷰 (다중 선택된 카테고리를 각각의 기둥에 배치)
       const categories = ['UX 기획', 'UI 디자인', '디자인 시스템', '협업·문제해결', 'AI 활용', '반응형·모바일'];
       const board = document.createElement('div');
       board.className = 'board-view';
       
       categories.forEach(cat => {
-        // 포함 여부로 필터링 (다중 선택 대응)
         const catProjects = projects.filter(p => p.cat && p.cat.includes(cat));
         if (catProjects.length > 0) {
           const col = document.createElement('div');
@@ -510,7 +507,6 @@
       grid.appendChild(board);
 
     } else if (view === 'time') {
-       // 3. 작업시간 타임라인 뷰
        const timeBoard = document.createElement('div');
        timeBoard.className = 'timeline-view';
        
@@ -535,18 +531,15 @@
     }
   }
 
-  // 탭 버튼 클릭 시 뷰 전환 이벤트
   document.getElementById("tabBar").addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
     document.querySelectorAll("#tabBar button").forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
-    
-    // 버튼에 저장된 data-view 값(gallery, category, time)을 가져와 렌더링
     render(btn.dataset.view);
   });
 
-  render(); // 초기 갤러리 뷰 실행
+  render(); 
 
   // ============================================================
   // 프로젝트 상세 보기 모달 연동
@@ -557,7 +550,6 @@
   const modalProjectBadges = document.getElementById('modalProjectBadges');
 
   grid.addEventListener('click', (e) => {
-    // 갤러리, 보드, 타임라인 어떤 카드든 클릭할 수 있게 a 태그로 감지
     const card = e.target.closest('a[data-title]');
     if (!card) return; 
     
@@ -565,7 +557,6 @@
 
     modalProjectTitle.textContent = card.dataset.title;
     
-    // 💡 뱃지 초기화 후 동적 생성 (여러 개의 카테고리를 분리해서 뱃지로 만듦)
     modalProjectBadges.innerHTML = ''; 
     const cats = card.dataset.cat.split(',').map(c => c.trim());
     cats.forEach(c => {
@@ -577,7 +568,6 @@
       }
     });
 
-    // 작업시간 뱃지 추가
     if (card.dataset.time && card.dataset.time !== "작업시간 미지정") {
       const timeSpan = document.createElement('span');
       timeSpan.className = 'badge time-badge';
@@ -599,12 +589,12 @@
   });
 
   // ============================================================
-  // 카테고리 다중 선택(Tag Chip) 로직 및 업로드
+  // 카테고리 다중 선택(Tag Chip) 로직 및 업로드 폼 제어
   // ============================================================
   const categoryTags = document.querySelectorAll('.tag-chip');
   categoryTags.forEach(tag => {
     tag.addEventListener('click', () => {
-      tag.classList.toggle('selected'); // 클릭 시 선택/해제 토글
+      tag.classList.toggle('selected');
     });
   });
 
@@ -641,12 +631,11 @@
     });
   }
 
-  // 데이터 로드
   async function loadUserProjects() {
     if (!firebaseReady) return;
     try {
       const snapshot = await db.collection("projects").orderBy("createdAt", "desc").get();
-      projects.length = 0; // 더미 데이터 비우기
+      projects.length = 0;
       snapshot.forEach(doc => {
         const d = doc.data();
         projects.push({ title: d.title, cat: d.cat, time: d.time, img: d.imageUrl, grad: null });
@@ -661,82 +650,60 @@
   // ============================================================
   var quill = new Quill('#editor-container', {
     theme: 'snow',
-    placeholder: '새로운 포트폴리오 내용을 작성해보세요... (이미지/영상 드래그 앤 드롭 가능)',
+    placeholder: '새로운 포트폴리오 내용을 작성해보세요... (이미지/영상 첨부 가능)',
     modules: {
       toolbar: [
-        [{ 'header': [1, 2, 3, false] }], // 제목 크기
-        ['bold', 'italic', 'underline', 'strike'], // 글씨 스타일
-        [{ 'color': [] }, { 'background': [] }], // 색상
-        [{ 'list': 'ordered'}, { 'list': 'bullet' }], // 리스트
-        [{ 'align': [] }], // 정렬
-        ['link', 'image', 'video'], // 링크, 미디어 첨부
-        ['clean'] // 포맷 초기화
+        [{ 'header': [1, 2, 3, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'align': [] }],
+        ['link', 'image', 'video'],
+        ['clean']
       ]
     }
   });
 
   // ============================================================
-  // Cropper.js 이미지 조절 로직
+  // 단순 이미지 미리보기 로직 (크로퍼 제거)
   // ============================================================
-  let headerCropper = null;
-  let thumbCropper = null;
-
-  // 1. 헤더 이미지 업로드 시 크로퍼 실행
+  // 헤더 이미지 미리보기
   document.getElementById('inputHeaderImage').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(event) {
-        document.getElementById('headerCropperWrapper').style.display = 'block';
-        document.getElementById('btnHeaderImg').style.display = 'none'; // 버튼 숨기기
+        document.getElementById('btnHeaderImg').style.display = 'none';
         const img = document.getElementById('headerImgPreview');
         img.src = event.target.result;
-        
-        if(headerCropper) headerCropper.destroy(); // 기존 크로퍼 삭제
-        
-        // 크로퍼 적용 (가로로 긴 비율 유도)
-        headerCropper = new Cropper(img, {
-          viewMode: 1, // 크롭 박스가 캔버스를 벗어나지 않게
-          dragMode: 'move', // 배경을 드래그해서 움직이게
-          autoCropArea: 1,
-          aspectRatio: NaN, // 비율 자유 (원하면 21/9 등으로 고정 가능)
-          guides: true,
-        });
+        img.style.display = 'block';
       }
       reader.readAsDataURL(file);
     }
   });
 
-  // 2. 썸네일 이미지 업로드 시 크로퍼 실행
+  // 썸네일 미리보기
   document.getElementById('inputImage').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = function(event) {
-        document.getElementById('thumbCropperWrapper').style.display = 'block';
         const img = document.getElementById('thumbImgPreview');
         img.src = event.target.result;
-        
-        if(thumbCropper) thumbCropper.destroy(); // 기존 크로퍼 삭제
-        
-        // 크로퍼 적용 (그리드 카드 비율인 4:3 으로 고정)
-        thumbCropper = new Cropper(img, {
-          viewMode: 1,
-          dragMode: 'move',
-          aspectRatio: 4 / 3, // 갤러리 썸네일 비율 고정
-          autoCropArea: 1,
-        });
+        img.style.display = 'block';
       }
       reader.readAsDataURL(file);
     }
   });
 
+  // ============================================================
   // 저장 로직
+  // ============================================================
   document.getElementById("saveBtn").addEventListener("click", async () => {
     const title = document.getElementById("inputTitle").value.trim();
     const time = document.getElementById("inputTime").value.trim() || "작업시간 미지정";
     
-    // 💡 Quill 에디터에서 작성한 본문 HTML 데이터 가져오기
+    // 본문 데이터 가져오기
     const bodyText = quill.root.innerHTML; 
     
     const statusMsg = document.getElementById("statusMsg");
@@ -745,35 +712,32 @@
     const selectedTags = Array.from(document.querySelectorAll('.tag-chip.selected')).map(tag => tag.dataset.value);
     const cat = selectedTags.length > 0 ? selectedTags.join(', ') : "카테고리 미지정";
     
-    if (!thumbCropper || !title) { 
+    const thumbFile = document.getElementById('inputImage').files[0];
+    const headerFile = document.getElementById('inputHeaderImage').files[0];
+
+    if (!thumbFile || !title) { 
       statusMsg.textContent = "썸네일 이미지와 제목은 필수입니다."; 
       return; 
     }
 
     document.getElementById("saveBtn").disabled = true; 
-    statusMsg.textContent = "이미지를 처리하며 업로드 중입니다...";
+    statusMsg.textContent = "업로드 중입니다...";
 
     try {
-      // 1. 썸네일: Cropper에서 사용자가 조정한 그대로 잘라내어 Blob(파일) 형태로 변환
-      const thumbBlob = await new Promise(resolve => {
-        thumbCropper.getCroppedCanvas({ width: 800, height: 600 }).toBlob(resolve, 'image/jpeg', 0.85);
-      });
-      const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb.jpg`);
-      await thumbRef.put(thumbBlob);
+      // 1. 썸네일 원본 업로드
+      const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb_${thumbFile.name}`);
+      await thumbRef.put(thumbFile);
       const imageUrl = await thumbRef.getDownloadURL();
 
-      // 2. 헤더 이미지 (선택사항): Cropper에서 잘라낸 이미지 변환
+      // 2. 헤더 이미지 원본 업로드 (선택사항)
       let headerImageUrl = "";
-      if (headerCropper) {
-        const headerBlob = await new Promise(resolve => {
-          headerCropper.getCroppedCanvas({ maxWidth: 1920 }).toBlob(resolve, 'image/jpeg', 0.85);
-        });
-        const headerRef = storage.ref().child(`uploads/${Date.now()}_header.jpg`);
-        await headerRef.put(headerBlob);
+      if (headerFile) {
+        const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
+        await headerRef.put(headerFile);
         headerImageUrl = await headerRef.getDownloadURL();
       }
       
-      // 3. DB에 모두 저장 (본문 데이터 bodyText 포함)
+      // 3. DB에 저장
       await db.collection("projects").add({ 
         title, cat, time, imageUrl, headerImageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
       });
@@ -785,19 +749,19 @@
       setTimeout(() => {
         modalOverlayUpload.classList.remove("open"); statusMsg.textContent = "";
         
-        // 작성 폼 초기화
+        // 폼 초기화
         document.getElementById("inputImage").value = ""; 
         document.getElementById("inputHeaderImage").value = "";
         document.getElementById("inputTitle").value = "";
         document.getElementById("inputTime").value = "";
-        quill.root.innerHTML = ""; // 에디터 초기화
+        quill.root.innerHTML = ""; 
         
-        // 크로퍼 초기화
-        document.getElementById('headerCropperWrapper').style.display = 'none';
-        document.getElementById('thumbCropperWrapper').style.display = 'none';
+        // 미리보기 초기화
+        document.getElementById('headerImgPreview').style.display = 'none';
+        document.getElementById('headerImgPreview').src = '';
         document.getElementById('btnHeaderImg').style.display = 'block';
-        if(headerCropper) { headerCropper.destroy(); headerCropper = null; }
-        if(thumbCropper) { thumbCropper.destroy(); thumbCropper = null; }
+        document.getElementById('thumbImgPreview').style.display = 'none';
+        document.getElementById('thumbImgPreview').src = '';
         
         categoryTags.forEach(tag => tag.classList.remove('selected'));
       }, 800);
