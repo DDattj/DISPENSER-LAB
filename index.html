@@ -665,6 +665,16 @@
   });
 
   // ============================================================
+  // Flatpickr (달력) 초기화
+  // ============================================================
+  flatpickr("#inputTime", {
+    mode: "range",          // 날짜를 1개 또는 2개(범위) 선택할 수 있게 설정
+    locale: "ko",           // 한국어 UI 적용
+    dateFormat: "Y.m.d",    // 2026.07.30 형식으로 출력
+    rangeSeparator: " - "   // 두 날짜를 선택했을 때 사이에 들어갈 기호
+  });
+
+  // ============================================================
   // 단순 이미지 미리보기 로직 (크로퍼 제거)
   // ============================================================
   // 헤더 이미지 미리보기
@@ -705,18 +715,17 @@
     
     // 본문 데이터 가져오기
     const bodyText = quill.root.innerHTML; 
-    
     const statusMsg = document.getElementById("statusMsg");
     
     // 선택된 카테고리
     const selectedTags = Array.from(document.querySelectorAll('.tag-chip.selected')).map(tag => tag.dataset.value);
     const cat = selectedTags.length > 0 ? selectedTags.join(', ') : "카테고리 미지정";
     
-    const thumbFile = document.getElementById('inputImage').files[0];
+    // 💡 썸네일(커버) 인풋이 제거되었으므로, 헤더 이미지만 가져옵니다.
     const headerFile = document.getElementById('inputHeaderImage').files[0];
 
-    if (!thumbFile || !title) { 
-      statusMsg.textContent = "썸네일 이미지와 제목은 필수입니다."; 
+    if (!headerFile || !title) { 
+      statusMsg.textContent = "헤더(커버) 이미지와 제목은 필수입니다."; 
       return; 
     }
 
@@ -724,25 +733,21 @@
     statusMsg.textContent = "업로드 중입니다...";
 
     try {
-      // 1. 썸네일 원본 업로드
-      const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb_${thumbFile.name}`);
-      await thumbRef.put(thumbFile);
-      const imageUrl = await thumbRef.getDownloadURL();
-
-      // 2. 헤더 이미지 원본 업로드 (선택사항)
+      // 1. 헤더 이미지 원본 업로드
       let headerImageUrl = "";
-      if (headerFile) {
-        const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
-        await headerRef.put(headerFile);
-        headerImageUrl = await headerRef.getDownloadURL();
-      }
+      const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
+      await headerRef.put(headerFile);
+      headerImageUrl = await headerRef.getDownloadURL();
+      
+      // 💡 2. 별다른 설정이 없으면 헤더 이미지가 썸네일(imageUrl)이 됨
+      const imageUrl = headerImageUrl; 
       
       // 3. DB에 저장
-      await db.collection("projects").add({ 
+      const docRef = await db.collection("projects").add({ 
         title, cat, time, imageUrl, headerImageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
       });
       
-      projects.unshift({ title, cat, time, img: imageUrl, grad: null });
+      projects.unshift({ id: docRef.id, title, cat, time, img: imageUrl, grad: null });
       render();
       
       statusMsg.textContent = "저장 완료!";
@@ -750,7 +755,6 @@
         modalOverlayUpload.classList.remove("open"); statusMsg.textContent = "";
         
         // 폼 초기화
-        document.getElementById("inputImage").value = ""; 
         document.getElementById("inputHeaderImage").value = "";
         document.getElementById("inputTitle").value = "";
         document.getElementById("inputTime").value = "";
@@ -760,8 +764,6 @@
         document.getElementById('headerImgPreview').style.display = 'none';
         document.getElementById('headerImgPreview').src = '';
         document.getElementById('btnHeaderImg').style.display = 'block';
-        document.getElementById('thumbImgPreview').style.display = 'none';
-        document.getElementById('thumbImgPreview').src = '';
         
         categoryTags.forEach(tag => tag.classList.remove('selected'));
       }, 800);
