@@ -10,6 +10,8 @@
   
 <!-- 💡 Quill.js (블로그형 에디터) CSS -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<!-- 💡 Flatpickr (달력) CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <style>
   :root{
@@ -100,15 +102,26 @@
   .card {
     position: relative; aspect-ratio: 4 / 3; background: var(--card-bg); border: 1px solid var(--line);
     border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(33,31,28,0.04); transition: transform .2s ease, box-shadow .2s ease;
+    display: flex; flex-direction: column;
   }
   .card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -18px rgba(33,31,28,0.35); }
-  .card-thumb { position: absolute; inset: 0; background: var(--line); }
+  .card-thumb { flex: 1; position: relative; background: var(--line); }
   .card-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .card-body {
-    position: absolute; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.7);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); padding: 10px 14px 12px;
+  
+  /* 💡 스크린샷 스타일의 하단 영역 및 썸네일 변경 버튼 */
+  .card-bottom-area {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+    display: flex; justify-content: space-between; align-items: flex-end; padding: 12px 16px;
+    pointer-events: none; /* 클릭 이벤트 통과 */
   }
-  .card-title { font-size: 15px; font-weight: 600; line-height: 1.4; }
+  .card-title { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 2px; font-family: sans-serif; text-transform: uppercase; mix-blend-mode: overlay; pointer-events: auto; }
+  .thumb-edit-btn {
+    font-size: 20px; color: #fff; cursor: pointer; pointer-events: auto;
+    mix-blend-mode: color-dodge; /* 컬러 닷지 효과 */
+    opacity: 0.8; transition: opacity 0.2s; background: none; border: none; padding: 0; line-height: 1;
+  }
+  .thumb-edit-btn:hover { opacity: 1; }
 
   /* Board View (Category) */
   .board-view { display: flex; gap: 24px; min-width: max-content; }
@@ -342,21 +355,11 @@
           </div>
         </div>
         
-        <!-- 💡 복구된 작업시간 입력란 -->
+        <!-- 💡 복구된 작업시간 입력란 (Flatpickr 달력 연동) -->
         <div class="notion-property-row">
           <div class="notion-property-label">⏱️ 작업시간</div>
           <div class="notion-property-value">
-            <input type="text" id="inputTime" class="notion-select" placeholder="예: 2026.05 - 2026.06">
-          </div>
-        </div>
-
-        <div class="notion-property-row">
-          <div class="notion-property-label">🖼️ 썸네일(커버)</div>
-          <div class="notion-property-value">
-            <input type="file" id="inputImage" class="notion-file" accept="image/*">
-            <div style="margin-top: 8px;">
-               <img id="thumbImgPreview" src="" alt="썸네일 미리보기" style="max-width: 100%; max-height: 300px; display: none; border-radius: 8px;">
-            </div>
+            <input type="text" id="inputTime" class="notion-select" placeholder="클릭하여 날짜 선택 (1일 또는 기간)">
           </div>
         </div>
       </div>
@@ -411,6 +414,10 @@
 
 <!-- 💡 Quill.js JS 로드 -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<!-- 💡 Flatpickr (달력) JS 로드 -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<!-- 💡 Flatpickr 한국어 설정 -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 
 <script>
   const firebaseConfig = {
@@ -454,18 +461,15 @@
     
     if (view === 'gallery') {
       projects.forEach(p => {
-        const card = document.createElement("a");
+        const card = document.createElement("div"); // a 태그에서 div로 변경 (내부 버튼 클릭 위해)
         card.className = "card";
-        card.href = "#";
-        card.dataset.title = p.title;
-        card.dataset.cat = p.cat || "카테고리 미지정";
-        card.dataset.time = p.time || "작업시간 미지정";
         card.innerHTML = `
-          <div class="card-thumb" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
+          <a href="#" class="card-thumb" data-title="${p.title}" data-cat="${p.cat || '카테고리 미지정'}" data-time="${p.time || '작업시간 미지정'}" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
             ${p.img ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">` : ""}
-          </div>
-          <div class="card-body">
+          </a>
+          <div class="card-bottom-area">
             <span class="card-title">${p.title}</span>
+            <button class="thumb-edit-btn" onclick="openThumbUploader('${p.id}')" title="썸네일 변경">•••</button>
           </div>
         `;
         grid.appendChild(card);
@@ -769,6 +773,47 @@
       }, 800);
     } catch (e) { statusMsg.textContent = "저장 실패: " + e.message; } finally { document.getElementById("saveBtn").disabled = false; }
   });
+
+  // ============================================================
+  // 💡 썸네일 개별 교체 기능
+  // ============================================================
+  function openThumbUploader(projectId) {
+    if(!projectId || projectId === "undefined") {
+        alert("이 항목은 더미 데이터라 썸네일을 변경할 수 없습니다. 새로 작성한 프로젝트에서 시도해보세요!");
+        return;
+    }
+    
+    // 임시 input[type="file"] 생성
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    
+    fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if(!file) return;
+        
+        try {
+            // 1. Storage에 새 썸네일 업로드
+            const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb_${file.name}`);
+            await thumbRef.put(file);
+            const newThumbUrl = await thumbRef.getDownloadURL();
+            
+            // 2. DB 업데이트 (해당 프로젝트의 imageUrl 속성 변경)
+            await db.collection("projects").doc(projectId).update({
+                imageUrl: newThumbUrl
+            });
+            
+            alert("썸네일이 성공적으로 변경되었습니다!");
+            loadUserProjects(); // 리스트 새로고침
+            
+        } catch(err) {
+            console.error(err);
+            alert("썸네일 변경 중 오류가 발생했습니다.");
+        }
+    };
+    
+    fileInput.click();
+  }
 </script>
 
 </body>
