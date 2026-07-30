@@ -112,12 +112,12 @@
   .card-bottom-area {
     position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
     background: rgba(255, 255, 255, 0.6); /* 화이트 오퍼시티 60% */
-    display: flex; justify-content: space-between; align-items: center; padding: 0 16px; /* 텍스트 수직 중앙 정렬로 더 깔끔하게 수정 */
-    pointer-events: none; /* 클릭 이벤트 통과 */
+    display: flex; justify-content: space-between; align-items: center; padding: 0 16px; 
+    pointer-events: none; /* 배경은 클릭 이벤트 통과 */
   }
   .card-title { 
     font-size: 16px; font-weight: 700; color: var(--ink);
-    letter-spacing: 1px; font-family: sans-serif; pointer-events: auto; 
+    letter-spacing: 1px; font-family: sans-serif; pointer-events: auto; /* 타이틀은 클릭 가능하게 복구 */
   }
   .thumb-edit-btn {
     font-size: 20px; color: var(--ink); cursor: pointer; pointer-events: auto;
@@ -219,7 +219,7 @@
   .notion-property-label { width: 140px; color: #767670; display: flex; align-items: center; gap: 8px; font-weight: 500; height: 28px; }
   .notion-property-value { flex: 1; }
   
-  /* 💡 카테고리 다중 선택 칩 디자인 */
+  /* 카테고리 다중 선택 칩 디자인 */
   .category-tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag-chip {
     padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 500;
@@ -238,13 +238,13 @@
   
   /* Quill 에디터 (본문) 스타일 수정 */
   #editor-container { 
-    height: auto; /* 고정 높이 해제 */
-    min-height: 400px; /* 최소 높이 보장 */
+    height: auto; 
+    min-height: 400px; 
     font-family: inherit; font-size: 16px; color: var(--ink);
   }
   .ql-toolbar.ql-snow { border: none !important; border-bottom: 1px solid var(--line) !important; padding: 12px 0 !important; margin-bottom: 16px; }
   .ql-container.ql-snow { border: none !important; font-family: inherit; font-size: 16px; height: auto !important; }
-  .ql-editor { padding: 0 !important; overflow-y: visible !important; } /* 에디터 내부 스크롤 방지 */
+  .ql-editor { padding: 0 !important; overflow-y: visible !important; } 
   .ql-editor.ql-blank::before { left: 0; color: #ccc; font-style: normal; }
 
   .notion-divider { border: none; border-top: 1px solid #ededeb; margin: 16px 0 24px 0; width: 100%; }
@@ -253,7 +253,7 @@
   .notion-btn-save, .notion-btn-cancel { 
     font-family: inherit; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s ease;
   }
-  .notion-btn-save { background: #2383e2; color: white; } 
+  .notion-btn-save { background: #2383e2; color: white; display: flex; align-items: center; justify-content: center; min-width: 60px; } 
   .notion-btn-save:hover { background: #1a6fca; }
   .notion-btn-save:disabled { opacity: 0.5; cursor: not-allowed; }
   .notion-btn-cancel { background: transparent; color: var(--ink-soft); }
@@ -266,6 +266,25 @@
     .notion-title-input { font-size: 28px; }
     .notion-property-label { width: 100px; }
   }
+
+  /* ============================================================ */
+  /* 💡 로딩 스피너 (저장 중 상태 표시) */
+  /* ============================================================ */
+  .loading-overlay {
+    position: fixed; inset: 0; background: rgba(255, 255, 255, 0.7); 
+    display: none; align-items: center; justify-content: center; 
+    z-index: 9999; flex-direction: column; gap: 16px;
+    backdrop-filter: blur(4px);
+  }
+  .loading-overlay.active { display: flex; }
+  .spinner {
+    width: 48px; height: 48px; border: 4px solid var(--line); 
+    border-bottom-color: var(--sage); border-radius: 50%;
+    animation: rotation 1s linear infinite;
+  }
+  .loading-text { font-size: 15px; font-weight: 600; color: var(--ink-soft); }
+  @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
 
   /* ============================================================ */
   /* 프로젝트 상세 보기 모달 디자인 (CSS) */
@@ -302,6 +321,12 @@
 </head>
 <body>
 
+<!-- 💡 전체 화면 로딩 스피너 HTML -->
+<div id="globalLoader" class="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text">안전하게 저장하는 중입니다...</div>
+</div>
+
 <div class="banner">
   <img src="images/banner.gif" alt="배너" onerror="this.style.display='none'; document.getElementById('bannerPlaceholder').style.display='flex';">
   <div class="banner-placeholder" id="bannerPlaceholder" style="display:none;">
@@ -336,7 +361,7 @@
 <!-- ============================================================ -->
 <div class="modal-overlay-upload" id="modalOverlay">
   <div class="notion-modal">
-    <!-- 💡 헤더 이미지 영역 (Cropper 없음) -->
+    <!-- 헤더 이미지 영역 (Cropper 없음) -->
     <div class="notion-header-image-container" id="headerImageContainer">
       <button class="notion-header-image-btn" id="btnHeaderImg" onclick="document.getElementById('inputHeaderImage').click()">🖼 커버 추가 (선택)</button>
       <input type="file" id="inputHeaderImage" accept="image/*" style="display: none;">
@@ -347,7 +372,6 @@
       <input type="text" id="inputTitle" class="notion-title-input" placeholder="제목 없음">
 
       <div class="notion-properties">
-        <!-- 💡 복구된 카테고리 다중 선택 영역 -->
         <div class="notion-property-row">
           <div class="notion-property-label">📂 카테고리</div>
           <div class="notion-property-value">
@@ -362,7 +386,6 @@
           </div>
         </div>
         
-        <!-- 💡 복구된 작업시간 입력란 (Flatpickr 달력 연동) -->
         <div class="notion-property-row">
           <div class="notion-property-label">⏱️ 작업시간</div>
           <div class="notion-property-value">
@@ -373,7 +396,7 @@
 
       <hr class="notion-divider">
 
-      <!-- 💡 실제 글(본문) 작성 영역 (블로그형 에디터) -->
+      <!-- 실제 글(본문) 작성 영역 (블로그형 에디터) -->
       <div style="width: 100%;">
         <div id="editor-container"></div>
       </div>
@@ -400,7 +423,7 @@
     
     <div class="modal-header">
       <h1 id="modalProjectTitle" style="font-size: 32px; font-weight: 800; margin-bottom: 12px;">프로젝트 제목</h1>
-      <!-- 💡 선택된 다수의 카테고리 뱃지가 여기에 동적으로 삽입됩니다 -->
+      <!-- 선택된 다수의 카테고리 뱃지가 여기에 동적으로 삽입됩니다 -->
       <div id="modalProjectBadges" style="margin-bottom: 20px;"></div>
     </div>
     
@@ -419,11 +442,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<!-- 💡 Quill.js JS 로드 -->
+<!-- Quill.js JS 로드 -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-<!-- 💡 Flatpickr (달력) JS 로드 -->
+<!-- Flatpickr (달력) JS 로드 -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- 💡 Flatpickr 한국어 설정 -->
+<!-- Flatpickr 한국어 설정 -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 
 <script>
@@ -468,7 +491,7 @@
     
     if (view === 'gallery') {
       projects.forEach(p => {
-        const card = document.createElement("div"); // a 태그에서 div로 변경 (내부 버튼 클릭 위해)
+        const card = document.createElement("div"); 
         card.className = "card";
         card.innerHTML = `
           <a href="#" class="card-thumb" data-title="${p.title}" data-cat="${p.cat || '카테고리 미지정'}" data-time="${p.time || '작업시간 미지정'}" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
@@ -612,7 +635,6 @@
   const fabBtn = document.getElementById("fabBtn");
   const modalOverlayUpload = document.getElementById("modalOverlay");
   const cancelBtn = document.getElementById("cancelBtn");
-  const saveBtn = document.getElementById("statusMsg");
 
   fabBtn.addEventListener("click", () => { modalOverlayUpload.classList.add("open"); });
   cancelBtn.addEventListener("click", () => { modalOverlayUpload.classList.remove("open"); document.getElementById("statusMsg").textContent = ""; });
@@ -681,10 +703,10 @@
   // Flatpickr (달력) 초기화
   // ============================================================
   flatpickr("#inputTime", {
-    mode: "range",          // 날짜를 1개 또는 2개(범위) 선택할 수 있게 설정
-    locale: "ko",           // 한국어 UI 적용
-    dateFormat: "Y.m.d",    // 2026.07.30 형식으로 출력
-    rangeSeparator: " - "   // 두 날짜를 선택했을 때 사이에 들어갈 기호
+    mode: "range",          
+    locale: "ko",           
+    dateFormat: "Y.m.d",    
+    rangeSeparator: " - "   
   });
 
   // ============================================================
@@ -705,22 +727,8 @@
     }
   });
 
-  // 썸네일 미리보기
-  document.getElementById('inputImage').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(event) {
-        const img = document.getElementById('thumbImgPreview');
-        img.src = event.target.result;
-        img.style.display = 'block';
-      }
-      reader.readAsDataURL(file);
-    }
-  });
-
   // ============================================================
-  // 저장 로직
+  // 💡 저장 로직 (로딩 스피너 및 자동 닫힘 적용)
   // ============================================================
   document.getElementById("saveBtn").addEventListener("click", async () => {
     const title = document.getElementById("inputTitle").value.trim();
@@ -734,57 +742,69 @@
     const selectedTags = Array.from(document.querySelectorAll('.tag-chip.selected')).map(tag => tag.dataset.value);
     const cat = selectedTags.length > 0 ? selectedTags.join(', ') : "카테고리 미지정";
     
-    // 💡 썸네일(커버) 인풋이 제거되었으므로, 헤더 이미지만 가져옵니다.
     const headerFile = document.getElementById('inputHeaderImage').files[0];
 
-    if (!headerFile || !title) { 
-      statusMsg.textContent = "헤더(커버) 이미지와 제목은 필수입니다."; 
+    if (!title) { 
+      statusMsg.style.color = "red";
+      statusMsg.textContent = "프로젝트 제목을 입력해주세요!"; 
       return; 
     }
 
-    document.getElementById("saveBtn").disabled = true; 
-    statusMsg.textContent = "업로드 중입니다...";
+    const saveBtn = document.getElementById("saveBtn");
+    const globalLoader = document.getElementById("globalLoader"); // 💡 로딩 화면 요소 가져오기
+
+    // 버튼 비활성화 및 로딩 화면 띄우기
+    saveBtn.disabled = true; 
+    globalLoader.classList.add("active"); 
 
     try {
-      // 1. 헤더 이미지 원본 업로드
-      let headerImageUrl = "";
-      const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
-      await headerRef.put(headerFile);
-      headerImageUrl = await headerRef.getDownloadURL();
+      let imageUrl = "";
       
-      // 💡 2. 별다른 설정이 없으면 헤더 이미지가 썸네일(imageUrl)이 됨
-      const imageUrl = headerImageUrl; 
+      if (headerFile) {
+        // 헤더 이미지 업로드
+        const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
+        await headerRef.put(headerFile);
+        imageUrl = await headerRef.getDownloadURL();
+      }
       
-      // 3. DB에 저장
+      // DB에 저장
       const docRef = await db.collection("projects").add({ 
-        title, cat, time, imageUrl, headerImageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+        title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
       });
       
       projects.unshift({ id: docRef.id, title, cat, time, img: imageUrl, grad: null });
       render();
       
-      statusMsg.textContent = "저장 완료!";
-      setTimeout(() => {
-        modalOverlayUpload.classList.remove("open"); statusMsg.textContent = "";
-        
-        // 폼 초기화
-        document.getElementById("inputHeaderImage").value = "";
-        document.getElementById("inputTitle").value = "";
-        document.getElementById("inputTime").value = "";
-        quill.root.innerHTML = ""; 
-        
-        // 미리보기 초기화
-        document.getElementById('headerImgPreview').style.display = 'none';
-        document.getElementById('headerImgPreview').src = '';
-        document.getElementById('btnHeaderImg').style.display = 'block';
-        
-        categoryTags.forEach(tag => tag.classList.remove('selected'));
-      }, 800);
-    } catch (e) { statusMsg.textContent = "저장 실패: " + e.message; } finally { document.getElementById("saveBtn").disabled = false; }
+      // 💡 저장 성공 시 로딩 화면 끄고, 모달창 자연스럽게 닫기
+      globalLoader.classList.remove("active");
+      modalOverlayUpload.classList.remove("open");
+      
+      // 폼 초기화 (다음 글 작성을 위해)
+      document.getElementById("inputHeaderImage").value = "";
+      document.getElementById("inputTitle").value = "";
+      document.getElementById("inputTime").value = "";
+      quill.root.innerHTML = ""; 
+      
+      // 미리보기 초기화
+      document.getElementById('headerImgPreview').style.display = 'none';
+      document.getElementById('headerImgPreview').src = '';
+      document.getElementById('btnHeaderImg').style.display = 'block';
+      
+      categoryTags.forEach(tag => tag.classList.remove('selected'));
+      statusMsg.textContent = ""; 
+
+    } catch (e) { 
+      // 에러 발생 시 로딩 화면 끄고 에러 메시지 표시
+      globalLoader.classList.remove("active");
+      statusMsg.style.color = "red";
+      statusMsg.textContent = "저장 실패: " + e.message; 
+    } finally { 
+      saveBtn.disabled = false; 
+    }
   });
 
   // ============================================================
-  // 💡 썸네일 개별 교체 기능
+  // 썸네일 개별 교체 기능
   // ============================================================
   function openThumbUploader(projectId) {
     if(!projectId || projectId === "undefined") {
@@ -801,6 +821,10 @@
         const file = e.target.files[0];
         if(!file) return;
         
+        // 💡 썸네일 교체 중 로딩 화면 띄우기
+        const globalLoader = document.getElementById("globalLoader");
+        globalLoader.classList.add("active");
+        
         try {
             // 1. Storage에 새 썸네일 업로드
             const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb_${file.name}`);
@@ -812,12 +836,14 @@
                 imageUrl: newThumbUrl
             });
             
-            alert("썸네일이 성공적으로 변경되었습니다!");
             loadUserProjects(); // 리스트 새로고침
             
         } catch(err) {
             console.error(err);
             alert("썸네일 변경 중 오류가 발생했습니다.");
+        } finally {
+            // 💡 완료 후 로딩 화면 끄기
+            globalLoader.classList.remove("active");
         }
     };
     
