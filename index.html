@@ -156,19 +156,39 @@
   /* 노션 스타일 새 프로젝트 업로드 모달 */
   /* ============================================================ */
   .modal-overlay-upload { 
-    position: fixed; inset: 0; background: rgba(33,31,28,0.45); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; 
+    position: fixed; inset: 0; background: rgba(33,31,28,0.45); display: none; align-items: flex-start; justify-content: center; z-index: 50; 
+    /* 상단 여백만 남기고 꽉 채우기 위해 padding 수정 */
+    padding: 60px 0 0 0; 
     backdrop-filter: blur(2px);
   }
   .modal-overlay-upload.open { display: flex; }
   
   .notion-modal { 
-    width: 100%; max-width: 720px; background: #fff; border-radius: 12px; padding: 60px 80px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; position: relative;
-    max-height: 90vh; overflow-y: auto;
+    /* 너비와 높이를 화면에 꽉 차게 변경, 둥근 모서리는 상단에만 적용 */
+    width: 100%; height: 100%; max-width: 900px; background: #fff; border-radius: 12px 12px 0 0; 
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.15); display: flex; flex-direction: column; position: relative;
+    overflow-y: auto;
   }
 
+  /* 헤더 이미지 영역 추가 */
+  .notion-header-image-container {
+    width: 100%; height: 30vh; min-height: 200px; background: #f3f3f2; position: relative;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+  }
+  .notion-header-image-preview {
+    width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; display: none;
+  }
+  .notion-header-image-btn {
+    position: relative; z-index: 10; padding: 8px 16px; background: rgba(255,255,255,0.8);
+    border: 1px solid var(--line); border-radius: 6px; font-size: 13px; cursor: pointer; backdrop-filter: blur(4px);
+  }
+  .notion-header-image-btn:hover { background: #fff; }
+
+  /* 컨텐츠 영역 패딩 조정 */
+  .notion-modal-content-area { padding: 40px 8vw 80px; display: flex; flex-direction: column; flex: 1; }
+
   .notion-title-input { 
-    font-family: inherit; font-size: 40px; font-weight: 800; border: none; outline: none; width: 100%; 
+    font-family: inherit; font-size: clamp(32px, 4vw, 40px); font-weight: 800; border: none; outline: none; width: 100%; 
     color: var(--ink); background: transparent; padding: 0; margin-bottom: 24px; letter-spacing: -0.02em;
   }
   .notion-title-input::placeholder { color: #e6e6e6; font-weight: 800; }
@@ -195,8 +215,22 @@
   .notion-select:hover, .notion-file:hover { background: #f3f3f2; }
   input[type="text"].notion-select { cursor: text; }
   
+  /* 이미지 미리보기 및 위치 조절 컨트롤 */
+  .image-preview-wrapper { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+  .image-preview-thumb { width: 60px; height: 60px; border-radius: 4px; object-fit: cover; display: none; background: #f3f3f2; border: 1px solid var(--line); }
+  .image-position-controls { display: none; gap: 4px; }
+  .image-position-controls button { padding: 4px 8px; font-size: 12px; border: 1px solid var(--line); background: #fff; border-radius: 4px; cursor: pointer; }
+  .image-position-controls button:hover { background: #f3f3f2; }
+
   .notion-divider { border: none; border-top: 1px solid #ededeb; margin: 16px 0 24px 0; width: 100%; }
   
+  /* 본문 작성 영역 (Textarea) 추가 */
+  .notion-body-input {
+    width: 100%; min-height: 200px; border: none; outline: none; resize: vertical;
+    font-family: inherit; font-size: 16px; line-height: 1.6; color: var(--ink); flex: 1;
+  }
+  .notion-body-input::placeholder { color: #ccc; }
+
   .notion-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 40px; }
   .notion-btn-save, .notion-btn-cancel { 
     font-family: inherit; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s ease;
@@ -210,8 +244,8 @@
   .notion-modal .status-msg { font-size: 13px; color: var(--ink-soft); margin-top: 12px; min-height: 18px; text-align: right; }
 
   @media (max-width: 640px) {
-    .notion-modal { padding: 40px 30px; }
-    .notion-title-input { font-size: 32px; }
+    .notion-modal-content-area { padding: 30px 6vw 60px; }
+    .notion-title-input { font-size: 28px; }
     .notion-property-label { width: 100px; }
   }
 
@@ -281,56 +315,74 @@
 <div class="logout-link" id="logoutLink">로그아웃</div>
 
 <!-- ============================================================ -->
-<!-- 노션 스타일 업로드 모달 HTML (다중 선택 칩 적용) -->
+<!-- 노션 스타일 업로드 모달 HTML -->
 <!-- ============================================================ -->
 <div class="modal-overlay-upload" id="modalOverlay">
   <div class="notion-modal">
-    <input type="text" id="inputTitle" class="notion-title-input" placeholder="제목 없음">
+    <!-- 💡 헤더 이미지 영역 -->
+    <div class="notion-header-image-container">
+      <img id="headerImgPreview" class="notion-header-image-preview" src="" alt="헤더 이미지 미리보기" style="object-position: 50% 50%;">
+      <button class="notion-header-image-btn" onclick="document.getElementById('inputHeaderImage').click()">🖼 커버 추가</button>
+      <input type="file" id="inputHeaderImage" accept="image/*" style="display: none;">
+    </div>
+    <!-- 이미지 위치 조절 (임시) -->
+    <div id="headerPosControls" class="image-position-controls" style="position: absolute; right: 10px; top: 10px; z-index: 10;">
+        <button type="button" onclick="adjustImagePos('headerImgPreview', 'up')">▲</button>
+        <button type="button" onclick="adjustImagePos('headerImgPreview', 'down')">▼</button>
+    </div>
 
-    <div class="notion-properties">
-      <div class="notion-property-row">
-        <div class="notion-property-label">📂 카테고리</div>
-        <div class="notion-property-value">
-          <!-- 💡 중복 선택이 가능한 카테고리 칩 영역 -->
-          <div class="category-tags" id="categoryTags">
-            <div class="tag-chip" data-value="UX 기획">UX 기획</div>
-            <div class="tag-chip" data-value="UI 디자인">UI 디자인</div>
-            <div class="tag-chip" data-value="디자인 시스템">디자인 시스템</div>
-            <div class="tag-chip" data-value="협업·문제해결">협업·문제해결</div>
-            <div class="tag-chip" data-value="AI 활용">AI 활용</div>
-            <div class="tag-chip" data-value="반응형·모바일">반응형·모바일</div>
+    <div class="notion-modal-content-area">
+      <input type="text" id="inputTitle" class="notion-title-input" placeholder="제목 없음">
+
+      <div class="notion-properties">
+        <div class="notion-property-row">
+          <div class="notion-property-label">📂 카테고리</div>
+          <div class="notion-property-value">
+            <div class="category-tags" id="categoryTags">
+              <div class="tag-chip" data-value="UX 기획">UX 기획</div>
+              <div class="tag-chip" data-value="UI 디자인">UI 디자인</div>
+              <div class="tag-chip" data-value="디자인 시스템">디자인 시스템</div>
+              <div class="tag-chip" data-value="협업·문제해결">협업·문제해결</div>
+              <div class="tag-chip" data-value="AI 활용">AI 활용</div>
+              <div class="tag-chip" data-value="반응형·모바일">반응형·모바일</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="notion-property-row">
+          <div class="notion-property-label">⏱️ 작업시간</div>
+          <div class="notion-property-value">
+            <input type="text" id="inputTime" class="notion-select" placeholder="예: 2026.05 - 2026.06">
+          </div>
+        </div>
+
+        <div class="notion-property-row">
+          <div class="notion-property-label">🖼️ 썸네일(커버)</div>
+          <div class="notion-property-value">
+            <input type="file" id="inputImage" class="notion-file" accept="image/*">
+            <div class="image-preview-wrapper">
+              <img id="thumbImgPreview" class="image-preview-thumb" src="" alt="썸네일 미리보기" style="object-position: 50% 50%;">
+              <div id="thumbPosControls" class="image-position-controls">
+                <button type="button" onclick="adjustImagePos('thumbImgPreview', 'up')">▲</button>
+                <button type="button" onclick="adjustImagePos('thumbImgPreview', 'down')">▼</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <hr class="notion-divider">
+
+      <!-- 💡 실제 글(본문) 작성 영역 -->
+      <textarea id="inputBody" class="notion-body-input" placeholder="새로운 포트폴리오 내용을 작성해보세요..."></textarea>
+
+      <div class="notion-modal-actions">
+        <button class="notion-btn-cancel" id="cancelBtn">취소</button>
+        <button class="notion-btn-save" id="saveBtn">저장</button>
+      </div>
       
-      <div class="notion-property-row">
-        <div class="notion-property-label">⏱️ 작업시간</div>
-        <div class="notion-property-value">
-          <input type="text" id="inputTime" class="notion-select" placeholder="예: 2026.05 - 2026.06">
-        </div>
-      </div>
-
-      <div class="notion-property-row">
-        <div class="notion-property-label">🖼️ 커버 이미지</div>
-        <div class="notion-property-value">
-          <input type="file" id="inputImage" class="notion-file" accept="image/*">
-        </div>
-      </div>
+      <div class="status-msg" id="statusMsg"></div>
     </div>
-
-    <hr class="notion-divider">
-
-    <div class="notion-modal-body" style="color: var(--ink-soft); font-size: 15px; line-height: 1.6;">
-      새로운 포트폴리오를 작성해보세요. <br>
-      상단의 내용이 입력되면 화면에 카드 형식으로 표시됩니다.
-    </div>
-
-    <div class="notion-modal-actions">
-      <button class="notion-btn-cancel" id="cancelBtn">취소</button>
-      <button class="notion-btn-save" id="saveBtn">저장</button>
-    </div>
-    
-    <div class="status-msg" id="statusMsg"></div>
   </div>
 </div>
 
@@ -611,27 +663,85 @@
   }
   loadUserProjects();
 
+  // 이미지 미리보기 로직
+  document.getElementById('inputHeaderImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = document.getElementById('headerImgPreview');
+        img.src = event.target.result;
+        img.style.display = 'block';
+        document.getElementById('headerPosControls').style.display = 'flex';
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById('inputImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const img = document.getElementById('thumbImgPreview');
+        img.src = event.target.result;
+        img.style.display = 'block';
+        document.getElementById('thumbPosControls').style.display = 'flex';
+      }
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // 임시 이미지 위치 조절 함수 (CSS object-position 변경)
+  let posHeader = 50;
+  let posThumb = 50;
+  function adjustImagePos(imgId, direction) {
+    const img = document.getElementById(imgId);
+    let currentPos = imgId === 'headerImgPreview' ? posHeader : posThumb;
+    
+    if (direction === 'up' && currentPos > 0) currentPos -= 10;
+    if (direction === 'down' && currentPos < 100) currentPos += 10;
+    
+    img.style.objectPosition = `50% ${currentPos}%`;
+    
+    if (imgId === 'headerImgPreview') posHeader = currentPos;
+    else posThumb = currentPos;
+  }
+
+
   // 저장 로직
   document.getElementById("saveBtn").addEventListener("click", async () => {
-    const file = document.getElementById("inputImage").files[0];
+    const file = document.getElementById("inputImage").files[0]; // 썸네일
+    const headerFile = document.getElementById("inputHeaderImage").files[0]; // 헤더 이미지
     const title = document.getElementById("inputTitle").value.trim();
     const time = document.getElementById("inputTime").value.trim() || "작업시간 미지정";
+    const bodyText = document.getElementById("inputBody").value; // 본문 텍스트
     const statusMsg = document.getElementById("statusMsg");
     
     // 💡 선택된 다중 태그들을 모아서 콤마(,)로 연결된 문자열로 만듭니다
     const selectedTags = Array.from(document.querySelectorAll('.tag-chip.selected')).map(tag => tag.dataset.value);
     const cat = selectedTags.length > 0 ? selectedTags.join(', ') : "카테고리 미지정";
     
-    if (!file || !title) { statusMsg.textContent = "이미지와 제목을 입력해주세요."; return; }
+    if (!file || !title) { statusMsg.textContent = "썸네일 이미지와 제목을 필수입니다."; return; }
 
     document.getElementById("saveBtn").disabled = true; statusMsg.textContent = "업로드 중...";
     try {
-      const fileRef = storage.ref().child(`uploads/${Date.now()}_${file.name}`);
+      // 썸네일 업로드
+      const fileRef = storage.ref().child(`uploads/${Date.now()}_thumb_${file.name}`);
       await fileRef.put(file);
       const imageUrl = await fileRef.getDownloadURL();
+
+      // 헤더 이미지 업로드 (선택 사항)
+      let headerImageUrl = "";
+      if(headerFile) {
+        const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
+        await headerRef.put(headerFile);
+        headerImageUrl = await headerRef.getDownloadURL();
+      }
       
+      // DB에 본문(bodyText)과 헤더이미지 URL도 함께 저장
       await db.collection("projects").add({ 
-        title, cat, time, imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+        title, cat, time, imageUrl, headerImageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
       });
       
       projects.unshift({ title, cat, time, img: imageUrl, grad: null });
@@ -640,10 +750,17 @@
       statusMsg.textContent = "저장 완료!";
       setTimeout(() => {
         modalOverlayUpload.classList.remove("open"); statusMsg.textContent = "";
+        
+        // 입력 필드 및 미리보기 초기화
         document.getElementById("inputImage").value = ""; 
+        document.getElementById("inputHeaderImage").value = "";
         document.getElementById("inputTitle").value = "";
         document.getElementById("inputTime").value = "";
-        // 💡 칩(태그) 선택 상태 초기화
+        document.getElementById("inputBody").value = "";
+        document.getElementById("headerImgPreview").style.display = "none";
+        document.getElementById("thumbImgPreview").style.display = "none";
+        document.getElementById("headerPosControls").style.display = "none";
+        document.getElementById("thumbPosControls").style.display = "none";
         categoryTags.forEach(tag => tag.classList.remove('selected'));
       }, 600);
     } catch (e) { statusMsg.textContent = "저장 실패: " + e.message; } finally { document.getElementById("saveBtn").disabled = false; }
