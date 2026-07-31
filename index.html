@@ -818,11 +818,11 @@
         title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
       });
       
-      projects.unshift({ id: docRef.id, title, cat, time, img: imageUrl, grad: null });
+      // 💡 추가됨: 방금 저장한 본문(bodyText)을 프론트엔드 리스트에도 추가
+      projects.unshift({ id: docRef.id, title, cat, time, img: imageUrl, bodyText: bodyText, grad: null });
       render();
       
-      // 💡 저장 성공 시 로딩 화면 끄고, 모달창 자연스럽게 닫기
-      globalLoader.classList.remove("active");
+      // 저장 성공 시 로딩 화면 끄고, 모달창 자연스럽게 닫기
       modalOverlayUpload.classList.remove("open");
       
       // 폼 초기화 (다음 글 작성을 위해)
