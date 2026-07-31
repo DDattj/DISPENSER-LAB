@@ -85,3 +85,4 @@ function render(view = currentView) {
      });
      grid.appendChild(timeBoard);
   }
+}
