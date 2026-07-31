@@ -23,11 +23,11 @@ try {
 
 // Quill 에디터 이미지 URL 직접 입력 핸들러 (스토리지 미사용)
 function imageHandler() {
-  const url = prompt("이미지 링크(URL)를 붙여넣으세요:\n(GitHub Issues 등에 드래그 앤 드롭하여 얻은 주소)");
-  
+  let url = prompt("이미지 링크(URL)를 붙여넣으세요:\n(GitHub Issues 주소 또는 Google Drive 공유 링크)");
   if (url && url.trim().length > 0) {
+    url = fixImageUrl(url.trim()); // 구글 드라이브 주소 자동 변환
     const range = quill.getSelection();
-    quill.insertEmbed(range.index, 'image', url.trim());
+    quill.insertEmbed(range.index, 'image', url);
   }
 }
 

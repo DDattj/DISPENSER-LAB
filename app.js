@@ -124,11 +124,26 @@ if(btnHeaderImgToggle) {
   });
 }
 
+// 구글 드라이브 주소 자동 변환 함수
+function fixImageUrl(url) {
+  if (!url) return "";
+  if (url.includes('drive.google.com')) {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
+  }
+  return url;
+}
+
 // [적용 클릭] 주소를 넣고 적용을 누르면 썸네일 미리보기가 바뀜
-if(applyCoverUrlBtn) {
+if (applyCoverUrlBtn) {
   applyCoverUrlBtn.addEventListener('click', () => {
-    const url = inputHeaderImageUrl.value.trim();
+    let url = inputHeaderImageUrl.value.trim();
+    url = fixImageUrl(url); // 구글 드라이브 주소 자동 변환!
+    
     if (url) {
+      inputHeaderImageUrl.value = url;
       headerImgPreview.src = url;
       headerImgPreview.style.display = 'block';
       coverUrlInputWrapper.style.display = 'none';
@@ -137,6 +152,7 @@ if(applyCoverUrlBtn) {
     }
   });
 }
+
 // --------------------------------------------------------
 
 function resetUploadForm() {
@@ -332,16 +348,16 @@ function openThumbUploader(projectId) {
       return;
   }
   
-  const newThumbUrl = prompt("변경할 썸네일 이미지 링크(URL)를 붙여넣으세요:\n(GitHub Issues 등에 드래그 앤 드롭하여 얻은 주소)");
-  
+  let newThumbUrl = prompt("변경할 썸네일 이미지 링크(URL)를 붙여넣으세요:");
   if(newThumbUrl && newThumbUrl.trim().length > 0) {
+      newThumbUrl = fixImageUrl(newThumbUrl.trim()); // 구글 드라이브 주소 자동 변환
+      
       const globalLoader = document.getElementById("globalLoader");
       globalLoader.classList.add("active");
       
-      // 스토리지 업로드 없이 DB에 주소(텍스트)만 바로 업데이트
       db.collection("projects").doc(projectId).update({
-          imageUrl: newThumbUrl.trim(),
-          headerImageUrl: newThumbUrl.trim()
+          imageUrl: newThumbUrl,
+          headerImageUrl: newThumbUrl
       }).then(() => {
           loadUserProjects();
       }).catch(err => {
