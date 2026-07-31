@@ -8,9 +8,7 @@
 <link rel="stylesheet" as="style" crossorigin
   href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
   
-<!-- 💡 Quill.js (블로그형 에디터) CSS -->
 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-<!-- 💡 Flatpickr (달력) CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
 <style>
@@ -102,31 +100,29 @@
   .card {
     position: relative; aspect-ratio: 4 / 3; background: var(--card-bg); border: 1px solid var(--line);
     border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(33,31,28,0.04); transition: transform .2s ease, box-shadow .2s ease;
-    display: block; /* 💡 flex 설정을 제거하여 뼈대가 무조건 4:3 비율을 유지하도록 강제합니다 */
+    display: block;
   }
   .card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -18px rgba(33,31,28,0.35); }
-  .card-thumb { position: absolute; inset: 0; background: var(--line); display: block; } /* 💡 썸네일 이미지가 카드 전체를 꽉 채우도록 변경 */
+  .card-thumb { position: absolute; inset: 0; background: var(--line); display: block; }
   .card-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   
-  /* 💡 스크린샷 스타일의 하단 영역 및 썸네일 변경 버튼 */
   .card-bottom-area {
     position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
-    background: rgba(255, 255, 255, 0.6); /* 화이트 오퍼시티 60% */
+    background: rgba(255, 255, 255, 0.6);
     display: flex; justify-content: space-between; align-items: center; padding: 0 16px; 
-    pointer-events: none; /* 배경은 클릭 이벤트 통과 */
+    pointer-events: none;
   }
   .card-title { 
     font-size: 16px; font-weight: 700; color: var(--ink);
-    letter-spacing: 1px; font-family: sans-serif; pointer-events: auto; /* 타이틀은 클릭 가능하게 복구 */
+    letter-spacing: 1px; font-family: sans-serif; pointer-events: auto;
   }
   .thumb-edit-btn {
     font-size: 20px; color: var(--ink); cursor: pointer; pointer-events: auto;
     opacity: 0.6; transition: opacity 0.2s; background: none; border: none; padding: 0; line-height: 1;
-    display: none; /* 기본적으로 숨김 처리 */
+    display: none;
   }
   .thumb-edit-btn:hover { opacity: 1; }
   
-  /* 💡 관리자 모드일 때만 버튼 보이기 */
   body.admin-mode .thumb-edit-btn { display: block; }
 
   /* Board View (Category) */
@@ -175,13 +171,10 @@
   .login-link:hover { color: var(--ink); }
   .logout-link { position: fixed; right: 96px; bottom: 42px; z-index: 41; font-size: 12px; color: var(--ink-soft); cursor: pointer; text-decoration: underline; display: none; }
 
-  /* ============================================================ */
-  /* 노션 스타일 새 프로젝트 업로드 모달 */
-  /* ============================================================ */
+  /* ---------- Notion Style Upload Modal ---------- */
   .modal-overlay-upload { 
     position: fixed; inset: 0; background: rgba(33,31,28,0.45); display: none; align-items: flex-start; justify-content: center; z-index: 50; 
-    padding: 60px 0 0 0; 
-    backdrop-filter: blur(2px);
+    padding: 60px 0 0 0; backdrop-filter: blur(2px);
   }
   .modal-overlay-upload.open { display: flex; }
   
@@ -191,7 +184,6 @@
     overflow-y: auto;
   }
 
-  /* 헤더 이미지 영역 */
   .notion-header-image-container {
     width: 100%; height: 30vh; min-height: 200px; background: #f3f3f2; position: relative;
     display: flex; align-items: center; justify-content: center; overflow: hidden;
@@ -205,7 +197,6 @@
   }
   .notion-header-image-btn:hover { background: #fff; }
 
-  /* 컨텐츠 영역 */
   .notion-modal-content-area { padding: 40px 8vw 80px; display: flex; flex-direction: column; flex: 1; }
 
   .notion-title-input { 
@@ -219,7 +210,6 @@
   .notion-property-label { width: 140px; color: #767670; display: flex; align-items: center; gap: 8px; font-weight: 500; height: 28px; }
   .notion-property-value { flex: 1; }
   
-  /* 카테고리 다중 선택 칩 디자인 */
   .category-tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag-chip {
     padding: 4px 12px; border-radius: 6px; font-size: 13px; font-weight: 500;
@@ -236,11 +226,8 @@
   .notion-select:hover, .notion-file:hover { background: #f3f3f2; }
   input[type="text"].notion-select { cursor: text; }
   
-  /* Quill 에디터 (본문) 스타일 수정 */
   #editor-container { 
-    height: auto; 
-    min-height: 400px; 
-    font-family: inherit; font-size: 16px; color: var(--ink);
+    height: auto; min-height: 400px; font-family: inherit; font-size: 16px; color: var(--ink);
   }
   .ql-toolbar.ql-snow { border: none !important; border-bottom: 1px solid var(--line) !important; padding: 12px 0 !important; margin-bottom: 16px; }
   .ql-container.ql-snow { border: none !important; font-family: inherit; font-size: 16px; height: auto !important; }
@@ -261,38 +248,24 @@
   
   .notion-modal .status-msg { font-size: 13px; color: var(--ink-soft); margin-top: 12px; min-height: 18px; text-align: right; }
 
-  @media (max-width: 640px) {
-    .notion-modal-content-area { padding: 30px 6vw 60px; }
-    .notion-title-input { font-size: 28px; }
-    .notion-property-label { width: 100px; }
-  }
-
-  /* ============================================================ */
-  /* 💡 로딩 스피너 (저장 중 상태 표시) */
-  /* ============================================================ */
+  /* ---------- Loading Overlay ---------- */
   .loading-overlay {
     position: fixed; inset: 0; background: rgba(255, 255, 255, 0.7); 
     display: none; align-items: center; justify-content: center; 
-    z-index: 9999; flex-direction: column; gap: 16px;
-    backdrop-filter: blur(4px);
+    z-index: 9999; flex-direction: column; gap: 16px; backdrop-filter: blur(4px);
   }
   .loading-overlay.active { display: flex; }
   .spinner {
     width: 48px; height: 48px; border: 4px solid var(--line); 
-    border-bottom-color: var(--sage); border-radius: 50%;
-    animation: rotation 1s linear infinite;
+    border-bottom-color: var(--sage); border-radius: 50%; animation: rotation 1s linear infinite;
   }
   .loading-text { font-size: 15px; font-weight: 600; color: var(--ink-soft); }
   @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-
-  /* ============================================================ */
-  /* 프로젝트 상세 보기 모달 디자인 (CSS) */
-  /* ============================================================ */
+  /* ---------- Project Detail Modal ---------- */
   .project-modal-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background-color: rgba(0, 0, 0, 0.4); 
-    z-index: 1000; opacity: 0; visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.4); z-index: 1000; opacity: 0; visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease; overflow-y: auto;
   }
   .project-modal-overlay.active { opacity: 1; visibility: visible; }
@@ -304,24 +277,44 @@
   }
   @media (max-width: 640px) { .project-modal-content { width: 92%; padding: 30px 20px 40px; } }
   .project-modal-overlay.active .project-modal-content { transform: translateY(0); }
-  .modal-sticky-header { position: sticky; top: 30px; display: flex; justify-content: flex-end; z-index: 10; height: 0; }
-  .close-project-btn {
+  
+  /* Sticky Header Action Buttons (연필, 쓰레기통, 닫기) */
+  .modal-sticky-header { 
+    position: sticky; top: 30px; display: flex; justify-content: flex-end; gap: 10px; z-index: 10; height: 0; 
+  }
+  .modal-action-btn {
     background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(4px); border: 1px solid var(--line); 
     width: 44px; height: 44px; border-radius: 50%; font-size: 18px; cursor: pointer; color: var(--ink);
     display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: all 0.2s ease;
   }
-  .close-project-btn:hover { background: #ffffff; transform: scale(1.05); }
+  .modal-action-btn:hover { background: #ffffff; transform: scale(1.08); }
+  
+  /* 관리자 전용 버튼 기본 숨김 */
+  .admin-only-btn { display: none; }
+  body.admin-mode .admin-only-btn { display: flex; }
   
   .badge {
     display: inline-block; padding: 5px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; margin-right: 8px; margin-bottom: 8px;
   }
   .badge.cat-badge { background: #eef1e9; color: var(--sage-deep); border: 1px solid #dfe6da; }
   .badge.time-badge { background: #f7f7f5; color: var(--ink-soft); border: 1px solid var(--line); }
+
+  /* 모달 상단 커버 이미지 */
+  .modal-cover-img {
+    width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 24px; display: none;
+  }
+
+  /* 모달 본문 스타일 정리 */
+  .modal-body-content {
+    line-height: 1.8; font-size: 16px; color: var(--ink); word-break: break-word;
+  }
+  .modal-body-content img {
+    max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; display: block;
+  }
 </style>
 </head>
 <body>
 
-<!-- 💡 전체 화면 로딩 스피너 HTML -->
 <div id="globalLoader" class="loading-overlay">
   <div class="spinner"></div>
   <div class="loading-text">안전하게 저장하는 중입니다...</div>
@@ -356,12 +349,8 @@
 <div class="login-link" id="loginLink">🔑 구글로 로그인</div>
 <div class="logout-link" id="logoutLink">로그아웃</div>
 
-<!-- ============================================================ -->
-<!-- 노션 스타일 업로드 모달 HTML -->
-<!-- ============================================================ -->
 <div class="modal-overlay-upload" id="modalOverlay">
   <div class="notion-modal">
-    <!-- 헤더 이미지 영역 (Cropper 없음) -->
     <div class="notion-header-image-container" id="headerImageContainer">
       <button class="notion-header-image-btn" id="btnHeaderImg" onclick="document.getElementById('inputHeaderImage').click()">🖼 커버 추가 (선택)</button>
       <input type="file" id="inputHeaderImage" accept="image/*" style="display: none;">
@@ -396,7 +385,6 @@
 
       <hr class="notion-divider">
 
-      <!-- 실제 글(본문) 작성 영역 (블로그형 에디터) -->
       <div style="width: 100%;">
         <div id="editor-container"></div>
       </div>
@@ -411,42 +399,34 @@
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- 프로젝트 상세 보기 모달 -->
-<!-- ============================================================ -->
 <div id="projectModal" class="project-modal-overlay">
   <div class="project-modal-content">
     
     <div class="modal-sticky-header">
-      <button id="closeProjectBtn" class="close-project-btn">✕</button>
+      <button id="editProjectBtn" class="modal-action-btn admin-only-btn" title="글 수정">✏️</button>
+      <button id="deleteProjectBtn" class="modal-action-btn admin-only-btn" title="글 삭제" style="color: #e03e3e;">🗑️</button>
+      <button id="closeProjectBtn" class="modal-action-btn" title="닫기">✕</button>
     </div>
     
     <div class="modal-header">
+      <img id="modalProjectCover" class="modal-cover-img" src="" alt="커버 이미지">
       <h1 id="modalProjectTitle" style="font-size: 32px; font-weight: 800; margin-bottom: 12px;">프로젝트 제목</h1>
-      <!-- 선택된 다수의 카테고리 뱃지가 여기에 동적으로 삽입됩니다 -->
       <div id="modalProjectBadges" style="margin-bottom: 20px;"></div>
     </div>
     
-    <div class="modal-body" style="margin-top: 40px;">
-      <div style="height: 1200px; background: linear-gradient(#f9f9f9, #e9e5db); border-radius: 12px; padding: 40px; color: var(--ink-soft); text-align: center;">
-        스크롤을 아래로 쭉 내려보세요.<br><br>
-        실제 포트폴리오 이미지를 넣을 때 창이 위로 스르륵 밀려 올라가는 효과를 확인하실 수 있습니다!
-      </div>
+    <div class="modal-body" style="margin-top: 24px;">
+      <div id="modalProjectContent" class="modal-body-content"></div>
     </div>
   </div>
 </div>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
-<!-- Quill.js JS 로드 -->
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-<!-- Flatpickr (달력) JS 로드 -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-<!-- Flatpickr 한국어 설정 -->
 <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ko.js"></script>
 
 <script>
@@ -474,11 +454,14 @@
 </script>
 
 <script>
+  let editingProjectId = null; // 수정 중인 글의 ID (null이면 새 글 작성)
+  let activeProjectData = null; // 현재 상세 모달에 열린 프로젝트 데이터
+
   const projects = [
-    { no: "01", title: "쌀 수분 진정 시리즈", cat: "UI 디자인, 반응형·모바일", time: "2026.05 - 2026.06", img: "images/01.jpg", grad: ["#e7d9c4", "#b8a184"] },
-    { no: "02", title: "넥쿨러 앱 리디자인", cat: "UX 기획, AI 활용", time: "2026.04", img: "images/02.jpg", grad: ["#c9d6e0", "#7c93a8"] },
-    { no: "03", title: "스마트 선풍기 대시보드", cat: "디자인 시스템", time: "2026.03", img: "images/03.jpg", grad: ["#dfe6d9", "#8fa382"] },
-    { no: "04", title: "AIR 냉감 브랜딩", cat: "UI 디자인", time: "2025.12", img: "images/04.jpg", grad: ["#d6e4e8", "#7fa3ac"] }
+    { id: "demo-01", title: "쌀 수분 진정 시리즈", cat: "UI 디자인, 반응형·모바일", time: "2026.05 - 2026.06", img: "images/01.jpg", bodyText: "더미 데이터 예시 본문입니다.", grad: ["#e7d9c4", "#b8a184"] },
+    { id: "demo-02", title: "넥쿨러 앱 리디자인", cat: "UX 기획, AI 활용", time: "2026.04", img: "images/02.jpg", bodyText: "더미 데이터 예시 본문입니다.", grad: ["#c9d6e0", "#7c93a8"] },
+    { id: "demo-03", title: "스마트 선풍기 대시보드", cat: "디자인 시스템", time: "2026.03", img: "images/03.jpg", bodyText: "더미 데이터 예시 본문입니다.", grad: ["#dfe6d9", "#8fa382"] },
+    { id: "demo-04", title: "AIR 냉감 브랜딩", cat: "UI 디자인", time: "2025.12", img: "images/04.jpg", bodyText: "더미 데이터 예시 본문입니다.", grad: ["#d6e4e8", "#7fa3ac"] }
   ];
 
   const grid = document.getElementById("grid");
@@ -494,7 +477,7 @@
         const card = document.createElement("div"); 
         card.className = "card";
         card.innerHTML = `
-          <a href="#" class="card-thumb" data-title="${p.title}" data-cat="${p.cat || '카테고리 미지정'}" data-time="${p.time || '작업시간 미지정'}" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
+          <a href="#" class="card-thumb" data-id="${p.id}" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
             ${p.img ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">` : ""}
           </a>
           <div class="card-bottom-area">
@@ -523,9 +506,7 @@
             const card = document.createElement("a");
             card.className = "board-card";
             card.href = "#";
-            card.dataset.title = p.title;
-            card.dataset.cat = p.cat || "카테고리 미지정";
-            card.dataset.time = p.time || "작업시간 미지정";
+            card.dataset.id = p.id;
             card.innerHTML = `
               <div class="board-card-thumb" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
                 ${p.img ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">` : ""}
@@ -549,7 +530,7 @@
          row.className = 'timeline-row';
          row.innerHTML = `
            <div class="timeline-time">${p.time || '-'}</div>
-           <a href="#" class="timeline-card" data-title="${p.title}" data-cat="${p.cat || '카테고리 미지정'}" data-time="${p.time || '작업시간 미지정'}">
+           <a href="#" class="timeline-card" data-id="${p.id}">
               <div class="timeline-thumb" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">
                 ${p.img ? `<img src="${p.img}" alt="${p.title}" onerror="this.style.display='none';">` : ""}
               </div>
@@ -582,17 +563,33 @@
   const closeProjectBtn = document.getElementById('closeProjectBtn');
   const modalProjectTitle = document.getElementById('modalProjectTitle');
   const modalProjectBadges = document.getElementById('modalProjectBadges');
+  const modalProjectCover = document.getElementById('modalProjectCover');
+  const modalProjectContent = document.getElementById('modalProjectContent');
 
   grid.addEventListener('click', (e) => {
-    const card = e.target.closest('a[data-title]');
+    const card = e.target.closest('a[data-id]');
     if (!card) return; 
     
     e.preventDefault(); 
+    const pId = card.dataset.id;
+    const p = projects.find(item => item.id === pId);
+    if (!p) return;
 
-    modalProjectTitle.textContent = card.dataset.title;
+    activeProjectData = p; // 현재 프로젝트 저장
+
+    modalProjectTitle.textContent = p.title;
     
+    // 커버 이미지 설정
+    if (p.img) {
+      modalProjectCover.src = p.img;
+      modalProjectCover.style.display = 'block';
+    } else {
+      modalProjectCover.style.display = 'none';
+    }
+
+    // 뱃지 설정
     modalProjectBadges.innerHTML = ''; 
-    const cats = card.dataset.cat.split(',').map(c => c.trim());
+    const cats = (p.cat || '').split(',').map(c => c.trim());
     cats.forEach(c => {
       if (c && c !== "카테고리 미지정") {
         const span = document.createElement('span');
@@ -602,11 +599,18 @@
       }
     });
 
-    if (card.dataset.time && card.dataset.time !== "작업시간 미지정") {
+    if (p.time && p.time !== "작업시간 미지정") {
       const timeSpan = document.createElement('span');
       timeSpan.className = 'badge time-badge';
-      timeSpan.textContent = `⏱ ${card.dataset.time}`;
+      timeSpan.textContent = `⏱ ${p.time}`;
       modalProjectBadges.appendChild(timeSpan);
+    }
+
+    // 💡 본문 내용 동적 생성 및 대입
+    if (p.bodyText && p.bodyText.trim() !== '') {
+      modalProjectContent.innerHTML = p.bodyText;
+    } else {
+      modalProjectContent.innerHTML = `<p style="color:var(--ink-soft); text-align:center; padding:40px 0;">작성된 본문 내용이 없습니다.</p>`;
     }
 
     projectModal.classList.add('active');
@@ -616,6 +620,7 @@
   const closeProjectModal = () => {
     projectModal.classList.remove('active');
     document.body.classList.remove('modal-open');
+    activeProjectData = null;
   };
   closeProjectBtn.addEventListener('click', closeProjectModal);
   projectModal.addEventListener('click', (e) => {
@@ -623,7 +628,7 @@
   });
 
   // ============================================================
-  // 카테고리 다중 선택(Tag Chip) 로직 및 업로드 폼 제어
+  // 카테고리 다중 선택(Tag Chip) 및 업로드/수정 폼 제어
   // ============================================================
   const categoryTags = document.querySelectorAll('.tag-chip');
   categoryTags.forEach(tag => {
@@ -636,12 +641,40 @@
   const modalOverlayUpload = document.getElementById("modalOverlay");
   const cancelBtn = document.getElementById("cancelBtn");
 
-  fabBtn.addEventListener("click", () => { modalOverlayUpload.classList.add("open"); });
-  cancelBtn.addEventListener("click", () => { modalOverlayUpload.classList.remove("open"); document.getElementById("statusMsg").textContent = ""; });
-  modalOverlayUpload.addEventListener("click", (e) => {
-    if (e.target === modalOverlayUpload) { modalOverlayUpload.classList.remove("open"); document.getElementById("statusMsg").textContent = ""; }
+  // 새 글 작성 버튼 클릭
+  fabBtn.addEventListener("click", () => { 
+    editingProjectId = null; // 초기화 (새 글 생성)
+    resetUploadForm();
+    modalOverlayUpload.classList.add("open"); 
   });
 
+  cancelBtn.addEventListener("click", () => { 
+    modalOverlayUpload.classList.remove("open"); 
+    document.getElementById("statusMsg").textContent = ""; 
+  });
+
+  modalOverlayUpload.addEventListener("click", (e) => {
+    if (e.target === modalOverlayUpload) { 
+      modalOverlayUpload.classList.remove("open"); 
+      document.getElementById("statusMsg").textContent = ""; 
+    }
+  });
+
+  function resetUploadForm() {
+    document.getElementById("inputHeaderImage").value = "";
+    document.getElementById("inputTitle").value = "";
+    document.getElementById("inputTime").value = "";
+    quill.root.innerHTML = ""; 
+    document.getElementById('headerImgPreview').style.display = 'none';
+    document.getElementById('headerImgPreview').src = '';
+    document.getElementById('btnHeaderImg').style.display = 'block';
+    categoryTags.forEach(tag => tag.classList.remove('selected'));
+    document.getElementById("statusMsg").textContent = "";
+  }
+
+  // ============================================================
+  // 로그인 & 관리자 권한 설정 (imddattj@gmail.com 전용)
+  // ============================================================
   const loginLink = document.getElementById("loginLink");
   const logoutLink = document.getElementById("logoutLink");
 
@@ -658,14 +691,15 @@
       if (user && !isAdmin) { alert("관리자 계정이 아닙니다."); auth.signOut(); return; }
       if (isAdmin) {
         fabBtn.style.display = "flex"; loginLink.style.display = "none"; logoutLink.style.display = "block";
-        document.body.classList.add('admin-mode'); // 💡 관리자 모드 클래스 추가
+        document.body.classList.add('admin-mode');
       } else {
         fabBtn.style.display = "none"; loginLink.style.display = "block"; logoutLink.style.display = "none";
-        document.body.classList.remove('admin-mode'); // 💡 관리자 모드 클래스 제거
+        document.body.classList.remove('admin-mode');
       }
     });
   }
 
+  // DB에서 프로젝트 불러오기
   async function loadUserProjects() {
     if (!firebaseReady) return;
     try {
@@ -673,48 +707,46 @@
       projects.length = 0;
       snapshot.forEach(doc => {
         const d = doc.data();
-        projects.push({ title: d.title, cat: d.cat, time: d.time, img: d.imageUrl, grad: null });
+        projects.push({ 
+          id: doc.id, 
+          title: d.title, 
+          cat: d.cat, 
+          time: d.time, 
+          img: d.imageUrl || d.headerImageUrl, 
+          bodyText: d.bodyText || "", 
+          grad: null 
+        });
       });
       render();
     } catch (e) { console.warn("프로젝트 불러오기 실패:", e); }
   }
   loadUserProjects();
 
-  // ============================================================
-  // 💡 수정됨: Quill.js 에디터 이미지 업로드 핸들러 개조
-  // ============================================================
+  // Quill 에디터 이미지 업로드
   function imageHandler() {
-    // 1. 임시로 파일 선택 창을 만듭니다.
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
-    input.click(); // 파일 창 열기
+    input.click();
 
     input.onchange = async () => {
       const file = input.files[0];
       if (file) {
-        // 2. 이미지가 창고에 올라가는 동안 로딩 화면을 띄웁니다.
         const globalLoader = document.getElementById("globalLoader");
         const loaderText = globalLoader.querySelector('.loading-text');
         loaderText.textContent = "에디터 이미지 업로드 중...";
         globalLoader.classList.add("active");
 
         try {
-          // 3. 파이어베이스 Storage(창고)의 quill_uploads 폴더에 사진을 저장합니다.
           const fileRef = storage.ref().child(`quill_uploads/${Date.now()}_${file.name}`);
           await fileRef.put(file);
-          
-          // 4. 저장된 사진의 웹 링크(URL)를 가져옵니다.
           const url = await fileRef.getDownloadURL();
 
-          // 5. 현재 커서가 있는 위치에 사진 링크를 쏙 넣어줍니다! (텍스트 용량 초과 방지)
           const range = quill.getSelection();
           quill.insertEmbed(range.index, 'image', url);
-          
         } catch (e) {
           alert("이미지 첨부 실패: " + e.message);
         } finally {
-          // 6. 업로드가 끝나면 로딩 창을 끄고 텍스트를 원상복구합니다.
           globalLoader.classList.remove("active");
           loaderText.textContent = "안전하게 저장하는 중입니다..."; 
         }
@@ -722,10 +754,9 @@
     };
   }
 
-  // Quill 에디터 설정
   var quill = new Quill('#editor-container', {
     theme: 'snow',
-    placeholder: '새로운 포트폴리오 내용을 작성해보세요... (이미지/영상 첨부 가능)',
+    placeholder: '새로운 포트폴리오 내용을 작성해보세요...',
     modules: {
       toolbar: {
         container: [
@@ -737,28 +768,15 @@
           ['link', 'image', 'video'],
           ['clean']
         ],
-        handlers: {
-          // 기본 이미지 버튼의 동작을 우리가 개조한 imageHandler 함수로 가로챕니다!
-          image: imageHandler
-        }
+        handlers: { image: imageHandler }
       }
     }
   });
 
-  // ============================================================
-  // Flatpickr (달력) 초기화
-  // ============================================================
   flatpickr("#inputTime", {
-    mode: "range",          
-    locale: "ko",           
-    dateFormat: "Y.m.d",    
-    rangeSeparator: " - "   
+    mode: "range", locale: "ko", dateFormat: "Y.m.d", rangeSeparator: " - "   
   });
 
-  // ============================================================
-  // 단순 이미지 미리보기 로직 (크로퍼 제거)
-  // ============================================================
-  // 헤더 이미지 미리보기
   document.getElementById('inputHeaderImage').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -774,20 +792,16 @@
   });
 
   // ============================================================
-  // 💡 저장 로직 (로딩 스피너 및 자동 닫힘 적용)
+  // 글 저장 (새 글 등록 & 기존 글 수정 통합)
   // ============================================================
   document.getElementById("saveBtn").addEventListener("click", async () => {
     const title = document.getElementById("inputTitle").value.trim();
     const time = document.getElementById("inputTime").value.trim() || "작업시간 미지정";
-    
-    // 본문 데이터 가져오기
     const bodyText = quill.root.innerHTML; 
     const statusMsg = document.getElementById("statusMsg");
     
-    // 선택된 카테고리
     const selectedTags = Array.from(document.querySelectorAll('.tag-chip.selected')).map(tag => tag.dataset.value);
     const cat = selectedTags.length > 0 ? selectedTags.join(', ') : "카테고리 미지정";
-    
     const headerFile = document.getElementById('inputHeaderImage').files[0];
 
     if (!title) { 
@@ -797,68 +811,130 @@
     }
 
     const saveBtn = document.getElementById("saveBtn");
-    const globalLoader = document.getElementById("globalLoader"); // 💡 로딩 화면 요소 가져오기
+    const globalLoader = document.getElementById("globalLoader");
 
-    // 버튼 비활성화 및 로딩 화면 띄우기
     saveBtn.disabled = true; 
     globalLoader.classList.add("active"); 
 
     try {
-      let imageUrl = "";
+      let imageUrl = activeProjectData ? (activeProjectData.img || "") : "";
       
       if (headerFile) {
-        // 헤더 이미지 업로드
         const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
         await headerRef.put(headerFile);
         imageUrl = await headerRef.getDownloadURL();
       }
       
-      // DB에 저장
-      const docRef = await db.collection("projects").add({ 
-        title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
-      });
+      if (editingProjectId) {
+        // 💡 [수정 기능] 기존 파이어베이스 문서 업데이트
+        const updateData = { title, cat, time, bodyText };
+        if (imageUrl) {
+          updateData.imageUrl = imageUrl;
+          updateData.headerImageUrl = imageUrl;
+        }
+        await db.collection("projects").doc(editingProjectId).update(updateData);
+        alert("글이 수정되었습니다.");
+      } else {
+        // 💡 [생성 기능] 새 파이어베이스 문서 생성
+        await db.collection("projects").add({ 
+          title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+        });
+        alert("새 글이 저장되었습니다.");
+      }
       
-      // 💡 추가됨: 방금 저장한 본문(bodyText)을 프론트엔드 리스트에도 추가
-      projects.unshift({ id: docRef.id, title, cat, time, img: imageUrl, bodyText: bodyText, grad: null });
-      render();
-      
-      // 저장 성공 시 로딩 화면 끄고, 모달창 자연스럽게 닫기
       modalOverlayUpload.classList.remove("open");
-      
-      // 폼 초기화 (다음 글 작성을 위해)
-      document.getElementById("inputHeaderImage").value = "";
-      document.getElementById("inputTitle").value = "";
-      document.getElementById("inputTime").value = "";
-      quill.root.innerHTML = ""; 
-      
-      // 미리보기 초기화
-      document.getElementById('headerImgPreview').style.display = 'none';
-      document.getElementById('headerImgPreview').src = '';
-      document.getElementById('btnHeaderImg').style.display = 'block';
-      
-      categoryTags.forEach(tag => tag.classList.remove('selected'));
-      statusMsg.textContent = ""; 
+      closeProjectModal();
+      await loadUserProjects();
+      resetUploadForm();
 
     } catch (e) { 
-      // 에러 발생 시 로딩 화면 끄고 에러 메시지 표시
       globalLoader.classList.remove("active");
       statusMsg.style.color = "red";
       statusMsg.textContent = "저장 실패: " + e.message; 
     } finally { 
       saveBtn.disabled = false; 
+      globalLoader.classList.remove("active");
     }
   });
 
   // ============================================================
-  // 썸네일 개별 교체 기능
+  // 💡 [수정기능] 연필 아이콘 클릭
   // ============================================================
+  document.getElementById("editProjectBtn").addEventListener("click", () => {
+    if (!activeProjectData) return;
+    if (activeProjectData.id.startsWith("demo-")) {
+      alert("더미 데이터는 수정할 수 없습니다. 직접 작성하신 프로젝트에서 시도해 주세요!");
+      return;
+    }
+
+    editingProjectId = activeProjectData.id;
+
+    // 폼에 기존 데이터 채워 넣기
+    document.getElementById("inputTitle").value = activeProjectData.title || "";
+    document.getElementById("inputTime").value = activeProjectData.time || "";
+    quill.root.innerHTML = activeProjectData.bodyText || "";
+
+    // 카테고리 태그 선택 상태 복원
+    const activeCats = (activeProjectData.cat || "").split(",").map(c => c.trim());
+    categoryTags.forEach(tag => {
+      if (activeCats.includes(tag.dataset.value)) {
+        tag.classList.add("selected");
+      } else {
+        tag.classList.remove("selected");
+      }
+    });
+
+    // 커버 이미지 미리보기 복원
+    if (activeProjectData.img) {
+      document.getElementById('btnHeaderImg').style.display = 'none';
+      const img = document.getElementById('headerImgPreview');
+      img.src = activeProjectData.img;
+      img.style.display = 'block';
+    } else {
+      document.getElementById('btnHeaderImg').style.display = 'block';
+      document.getElementById('headerImgPreview').style.display = 'none';
+    }
+
+    // 기존 상세 모달 닫고 업로드/수정 모달 열기
+    closeProjectModal();
+    modalOverlayUpload.classList.add("open");
+  });
+
+  // ============================================================
+  // 💡 [삭제기능] 쓰레기통 아이콘 클릭
+  // ============================================================
+  document.getElementById("deleteProjectBtn").addEventListener("click", async () => {
+    if (!activeProjectData) return;
+    if (activeProjectData.id.startsWith("demo-")) {
+      alert("더미 데이터는 삭제할 수 없습니다.");
+      return;
+    }
+
+    if (confirm(`'${activeProjectData.title}' 프로젝트를 정말 삭제하시겠습니까?`)) {
+      const globalLoader = document.getElementById("globalLoader");
+      globalLoader.classList.add("active");
+
+      try {
+        // 파이어베이스 DB에서 삭제
+        await db.collection("projects").doc(activeProjectData.id).delete();
+        alert("성공적으로 삭제되었습니다.");
+        closeProjectModal();
+        await loadUserProjects();
+      } catch (e) {
+        alert("삭제 실패: " + e.message);
+      } finally {
+        globalLoader.classList.remove("active");
+      }
+    }
+  });
+
+  // 썸네일 개별 교체 기능
   function openThumbUploader(projectId) {
-    if(!projectId || projectId === "undefined") {
-        alert("이 항목은 더미 데이터라 썸네일을 변경할 수 없습니다. 새로 작성한 프로젝트에서 시도해보세요!");
+    if(!projectId || projectId.startsWith("demo-")) {
+        alert("이 항목은 더미 데이터라 썸네일을 변경할 수 없습니다.");
         return;
     }
     
-    // 임시 input[type="file"] 생성
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
@@ -867,28 +943,24 @@
         const file = e.target.files[0];
         if(!file) return;
         
-        // 💡 썸네일 교체 중 로딩 화면 띄우기
         const globalLoader = document.getElementById("globalLoader");
         globalLoader.classList.add("active");
         
         try {
-            // 1. Storage에 새 썸네일 업로드
             const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb_${file.name}`);
             await thumbRef.put(file);
             const newThumbUrl = await thumbRef.getDownloadURL();
             
-            // 2. DB 업데이트 (해당 프로젝트의 imageUrl 속성 변경)
             await db.collection("projects").doc(projectId).update({
-                imageUrl: newThumbUrl
+                imageUrl: newThumbUrl,
+                headerImageUrl: newThumbUrl
             });
             
-            loadUserProjects(); // 리스트 새로고침
-            
+            await loadUserProjects(); 
         } catch(err) {
             console.error(err);
             alert("썸네일 변경 중 오류가 발생했습니다.");
         } finally {
-            // 💡 완료 후 로딩 화면 끄기
             globalLoader.classList.remove("active");
         }
     };
