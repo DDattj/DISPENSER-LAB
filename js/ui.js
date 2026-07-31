@@ -6,16 +6,16 @@ const projects = [
 ];
 
 const grid = document.getElementById("grid");
-let currentView = 'gallery'; 
+let currentView = 'gallery';
 
 function render(view = currentView) {
   currentView = view;
   grid.innerHTML = "";
-  grid.className = view === 'gallery' ? 'grid' : 'view-container'; 
+  grid.className = view === 'gallery' ? 'grid' : 'view-container';
   
   if (view === 'gallery') {
     projects.forEach(p => {
-      const card = document.createElement("div"); 
+      const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
         <a href="#" class="card-thumb" data-id="${p.id}" style="${p.grad ? `background:linear-gradient(135deg, ${p.grad[0]}, ${p.grad[1]})` : "background:#e9e5db"}">

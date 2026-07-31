@@ -33,16 +33,16 @@ grid.addEventListener('click', (e) => {
   activeProjectData = p;
   modalProjectTitle.textContent = p.title;
   
-  // [수정 1] 구글 드라이브 주소 강제 변환 (DB에 옛날 주소로 저장되어 있어도 여기서 고쳐서 보여줌)
+  // [수정 1] 구글 드라이브 주소 강제 변환
   let finalImgUrl = p.img || "";
   if (finalImgUrl.includes('drive.google.com')) {
     const match = finalImgUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || finalImgUrl.match(/id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-      finalImgUrl = `https://lh3.googleusercontent.com/d/$${match[1]}`;
+      finalImgUrl = `https://lh3.googleusercontent.com/d/$$${match[1]}`;
     }
   }
 
-  // [수정 2] 커버 이미지 30vh 배너 레이아웃 표시 제어
+  // [수정 2] 커버 이미지 배너 레이아웃 표시 제어
   const modalCoverContainer = document.getElementById('modalCoverContainer');
   if (finalImgUrl) {
     modalProjectCover.src = finalImgUrl;
@@ -63,23 +63,6 @@ grid.addEventListener('click', (e) => {
       modalProjectBadges.appendChild(span);
     }
   });
-
-  if (p.time && p.time !== "작업시간 미지정") {
-    const timeSpan = document.createElement('span');
-    timeSpan.className = 'badge time-badge';
-    timeSpan.textContent = `⏱ ${p.time}`;
-    modalProjectBadges.appendChild(timeSpan);
-  }
-
-  if (p.bodyText && p.bodyText.trim() !== '') {
-    modalProjectContent.innerHTML = p.bodyText;
-  } else {
-    modalProjectContent.innerHTML = `<p style="color:var(--ink-soft); text-align:center; padding:40px 0;">작성된 본문 내용이 없습니다.</p>`;
-  }
-
-  projectModal.classList.add('active');
-  document.body.classList.add('modal-open');
-});
 
   if (p.time && p.time !== "작업시간 미지정") {
     const timeSpan = document.createElement('span');
@@ -138,7 +121,7 @@ modalOverlayUpload.addEventListener("click", (e) => {
   }
 });
 
-// ---- 커버 이미지 URL 입력 제어 로직 (스토리지 미사용) ----
+// ---- 커버 이미지 URL 입력 제어 로직 ----
 const headerImageContainer = document.getElementById('headerImageContainer');
 const btnHeaderImgToggle = document.getElementById('btnHeaderImgToggle');
 const coverUrlInputWrapper = document.getElementById('coverUrlInputWrapper');
@@ -146,7 +129,6 @@ const applyCoverUrlBtn = document.getElementById('applyCoverUrlBtn');
 const inputHeaderImageUrl = document.getElementById('inputHeaderImageUrl');
 const headerImgPreview = document.getElementById('headerImgPreview');
 
-// [버튼 클릭] 커버 추가 / 이미지 수정하기 버튼 클릭 시 URL 입력창 표시
 if(btnHeaderImgToggle) {
   btnHeaderImgToggle.addEventListener('click', () => {
     btnHeaderImgToggle.style.display = 'none';
@@ -154,18 +136,16 @@ if(btnHeaderImgToggle) {
   });
 }
 
-// [적용 클릭] 주소 입력 후 적용 시 반투명 레이어와 "이미지 수정하기" 버튼 적용
 if(applyCoverUrlBtn) {
   applyCoverUrlBtn.addEventListener('click', () => {
     let url = inputHeaderImageUrl.value.trim();
-    if (typeof fixImageUrl === 'function') url = fixImageUrl(url); // 구글 드라이브 주소 자동 변환 함수 사용 시
+    if (typeof fixImageUrl === 'function') url = fixImageUrl(url);
     
     if (url) {
       inputHeaderImageUrl.value = url;
       headerImgPreview.src = url;
       headerImgPreview.style.display = 'block';
       
-      // 60% 반투명 레이어 활성화 및 버튼 문구 변경
       if (headerImageContainer) headerImageContainer.classList.add('has-image');
       btnHeaderImgToggle.textContent = '🖼 이미지 수정하기';
       btnHeaderImgToggle.style.display = 'block';
@@ -176,43 +156,22 @@ if(applyCoverUrlBtn) {
   });
 }
 
-// 구글 드라이브 주소 자동 변환 함수
 function fixImageUrl(url) {
   if (!url) return "";
   if (url.includes('drive.google.com')) {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+      return `https://lh3.googleusercontent.com/d/$${match[1]}`;
     }
   }
   return url;
 }
-
-// [적용 클릭] 주소를 넣고 적용을 누르면 썸네일 미리보기가 바뀜
-if (applyCoverUrlBtn) {
-  applyCoverUrlBtn.addEventListener('click', () => {
-    let url = inputHeaderImageUrl.value.trim();
-    url = fixImageUrl(url); // 구글 드라이브 주소 자동 변환!
-    
-    if (url) {
-      inputHeaderImageUrl.value = url;
-      headerImgPreview.src = url;
-      headerImgPreview.style.display = 'block';
-      coverUrlInputWrapper.style.display = 'none';
-    } else {
-      alert("이미지 주소를 입력해주세요.");
-    }
-  });
-}
-
-// --------------------------------------------------------
 
 function resetUploadForm() {
   document.getElementById("inputTitle").value = "";
   document.getElementById("inputTime").value = "";
   if(typeof quill !== 'undefined') quill.root.innerHTML = "";
   
-  // 커버 이미지 폼 상태 초기화
   if(inputHeaderImageUrl) inputHeaderImageUrl.value = "";
   if(headerImgPreview) {
     headerImgPreview.style.display = 'none';
@@ -230,7 +189,7 @@ function resetUploadForm() {
   document.getElementById("statusMsg").textContent = "";
 }
 
-// 로그인 & 관리자 권한 (imddattj@gmail.com 전용)
+// 로그인 & 관리자 권한
 const loginLink = document.getElementById("loginLink");
 const logoutLink = document.getElementById("logoutLink");
 
@@ -278,7 +237,7 @@ async function loadUserProjects() {
 }
 loadUserProjects();
 
-// 저장 (등록 & 수정 통합) - 파이어베이스 스토리지를 거치지 않음!
+// 저장
 document.getElementById("saveBtn").addEventListener("click", async () => {
   const title = document.getElementById("inputTitle").value.trim();
   const time = document.getElementById("inputTime").value.trim() || "작업시간 미지정";
@@ -303,7 +262,6 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   try {
     let imageUrl = activeProjectData ? (activeProjectData.img || "") : "";
     
-    // 화면에 보여지는 미리보기 이미지 주소(URL)를 그대로 DB에 텍스트로 저장
     if (headerImgPreview && headerImgPreview.style.display === 'block' && headerImgPreview.src) {
       imageUrl = headerImgPreview.src;
     }
@@ -360,7 +318,6 @@ document.getElementById("editProjectBtn").addEventListener("click", () => {
     }
   });
 
-  // 이미지가 있을 때 60% 흰색 레이어 + "이미지 수정하기" 버튼 표시
   if (activeProjectData.img) {
     headerImgPreview.src = activeProjectData.img;
     headerImgPreview.style.display = 'block';
@@ -403,7 +360,7 @@ document.getElementById("deleteProjectBtn").addEventListener("click", async () =
   }
 });
 
-// 썸네일 개별 변경 (스토리지 없이 URL 입력 프롬프트로 완벽 대체!)
+// 썸네일 개별 변경
 function openThumbUploader(projectId) {
   if(!projectId || projectId.startsWith("demo-")) {
       alert("이 항목은 더미 데이터라 썸네일을 변경할 수 없습니다.");
@@ -412,7 +369,7 @@ function openThumbUploader(projectId) {
   
   let newThumbUrl = prompt("변경할 썸네일 이미지 링크(URL)를 붙여넣으세요:");
   if(newThumbUrl && newThumbUrl.trim().length > 0) {
-      newThumbUrl = fixImageUrl(newThumbUrl.trim()); // 구글 드라이브 주소 자동 변환
+      newThumbUrl = fixImageUrl(newThumbUrl.trim());
       
       const globalLoader = document.getElementById("globalLoader");
       globalLoader.classList.add("active");
