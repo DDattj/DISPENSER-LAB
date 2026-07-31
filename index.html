@@ -107,20 +107,26 @@
 
 <div id="projectModal" class="project-modal-overlay">
   <div class="project-modal-content">
+    
     <div class="modal-sticky-header">
       <button id="editProjectBtn" class="modal-action-btn admin-only-btn" title="글 수정">✏️</button>
       <button id="deleteProjectBtn" class="modal-action-btn admin-only-btn" title="글 삭제" style="color: #e03e3e;">🗑️</button>
       <button id="closeProjectBtn" class="modal-action-btn" title="닫기">✕</button>
     </div>
     
-    <div class="modal-header">
+    <div class="modal-cover-container" id="modalCoverContainer">
       <img id="modalProjectCover" class="modal-cover-img" src="" alt="커버 이미지">
-      <h1 id="modalProjectTitle" style="font-size: 32px; font-weight: 800; margin-bottom: 12px;">프로젝트 제목</h1>
-      <div id="modalProjectBadges" style="margin-bottom: 20px;"></div>
     </div>
-    
-    <div class="modal-body" style="margin-top: 24px;">
-      <div id="modalProjectContent" class="modal-body-content"></div>
+
+    <div class="modal-inner-content">
+      <div class="modal-header">
+        <h1 id="modalProjectTitle" style="font-size: 32px; font-weight: 800; margin-bottom: 12px; margin-top: 0;">프로젝트 제목</h1>
+        <div id="modalProjectBadges" style="margin-bottom: 20px;"></div>
+      </div>
+      
+      <div class="modal-body">
+        <div id="modalProjectContent" class="modal-body-content"></div>
+      </div>
     </div>
   </div>
 </div>

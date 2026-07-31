@@ -72,17 +72,39 @@ input[type="text"].notion-select { cursor: text; }
   transition: opacity 0.3s ease, visibility 0.3s ease; overflow-y: auto;
 }
 .project-modal-overlay.active { opacity: 1; visibility: visible; }
+
 .project-modal-content {
   background-color: #ffffff; width: 90%; max-width: 900px;
-  min-height: calc(100vh - 80px); margin: 40px auto; padding: 40px 60px 60px;
+  min-height: calc(100vh - 80px);
+  margin: 40px auto; padding: 0; /* 배너가 상단에 바짝 붙도록 0으로 설정 */
   border-radius: 20px; position: relative; transform: translateY(100px);
   transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  overflow: hidden; /* 모달 상단 곡면에 맞춰 커버 이미지 자르기 */
 }
-@media (max-width: 640px) { .project-modal-content { width: 92%; padding: 30px 20px 40px; } }
+@media (max-width: 640px) { .project-modal-content { width: 92%; } }
 .project-modal-overlay.active .project-modal-content { transform: translateY(0); }
 
-.modal-sticky-header { position: sticky; top: 30px; display: flex; justify-content: flex-end; gap: 10px; z-index: 10; height: 0; }
-.modal-cover-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 12px; margin-bottom: 24px; display: none; }
+/* 우측 상단 액션 버튼 (커버 이미지 위에 플로팅) */
+.modal-sticky-header {
+  position: absolute; top: 20px; right: 20px; display: flex; justify-content: flex-end; gap: 10px; z-index: 20;
+}
+
+/* 상단 커버 이미지 배너 (작성 모달과 동일한 30vh 가로 배너) */
+.modal-cover-container {
+  width: 100%; height: 30vh; min-height: 200px;
+  background: #f3f3f2; position: relative; overflow: hidden; display: none;
+}
+.modal-cover-img {
+  width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0; margin-bottom: 0;
+}
+
+/* 텍스트/본문 영역 내부 여백 */
+.modal-inner-content {
+  padding: 40px 60px 60px;
+}
+@media (max-width: 640px) {
+  .modal-inner-content { padding: 30px 20px 40px; }
+}
 
 .modal-body-content { line-height: 1.8; font-size: 16px; color: var(--ink); word-break: break-word; }
 .modal-body-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; display: block; }
@@ -116,3 +138,22 @@ input[type="text"].notion-select { cursor: text; }
   border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;
 }
 .url-input-wrapper button:hover { background: #1a6fca; }
+
+/* 커버 이미지가 있을 때 60% 흰색 반투명 레이어 생성 */
+.notion-header-image-container.has-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.6); /* 화이트 60% 불투명도 */
+  z-index: 5;
+  pointer-events: none; /* 클릭 이벤트가 아래로 전달되도록 설정 */
+}
+
+/* 커버 이미지 위 버튼 스타일 조정 */
+.notion-header-image-container.has-image .notion-header-image-btn {
+  z-index: 10;
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}

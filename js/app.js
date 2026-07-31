@@ -31,14 +31,26 @@ grid.addEventListener('click', (e) => {
   if (!p) return;
 
   activeProjectData = p;
-
   modalProjectTitle.textContent = p.title;
   
-  if (p.img) {
-    modalProjectCover.src = p.img;
+  // [수정 1] 구글 드라이브 주소 강제 변환 (DB에 옛날 주소로 저장되어 있어도 여기서 고쳐서 보여줌)
+  let finalImgUrl = p.img || "";
+  if (finalImgUrl.includes('drive.google.com')) {
+    const match = finalImgUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || finalImgUrl.match(/id=([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      finalImgUrl = `https://lh3.googleusercontent.com/d/$${match[1]}`;
+    }
+  }
+
+  // [수정 2] 커버 이미지 30vh 배너 레이아웃 표시 제어
+  const modalCoverContainer = document.getElementById('modalCoverContainer');
+  if (finalImgUrl) {
+    modalProjectCover.src = finalImgUrl;
     modalProjectCover.style.display = 'block';
+    if (modalCoverContainer) modalCoverContainer.style.display = 'block';
   } else {
     modalProjectCover.style.display = 'none';
+    if (modalCoverContainer) modalCoverContainer.style.display = 'none';
   }
 
   modalProjectBadges.innerHTML = '';
@@ -51,6 +63,23 @@ grid.addEventListener('click', (e) => {
       modalProjectBadges.appendChild(span);
     }
   });
+
+  if (p.time && p.time !== "작업시간 미지정") {
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'badge time-badge';
+    timeSpan.textContent = `⏱ ${p.time}`;
+    modalProjectBadges.appendChild(timeSpan);
+  }
+
+  if (p.bodyText && p.bodyText.trim() !== '') {
+    modalProjectContent.innerHTML = p.bodyText;
+  } else {
+    modalProjectContent.innerHTML = `<p style="color:var(--ink-soft); text-align:center; padding:40px 0;">작성된 본문 내용이 없습니다.</p>`;
+  }
+
+  projectModal.classList.add('active');
+  document.body.classList.add('modal-open');
+});
 
   if (p.time && p.time !== "작업시간 미지정") {
     const timeSpan = document.createElement('span');
@@ -110,17 +139,40 @@ modalOverlayUpload.addEventListener("click", (e) => {
 });
 
 // ---- 커버 이미지 URL 입력 제어 로직 (스토리지 미사용) ----
+const headerImageContainer = document.getElementById('headerImageContainer');
 const btnHeaderImgToggle = document.getElementById('btnHeaderImgToggle');
 const coverUrlInputWrapper = document.getElementById('coverUrlInputWrapper');
 const applyCoverUrlBtn = document.getElementById('applyCoverUrlBtn');
 const inputHeaderImageUrl = document.getElementById('inputHeaderImageUrl');
 const headerImgPreview = document.getElementById('headerImgPreview');
 
-// [버튼 클릭] 커버 추가 버튼을 누르면 입력창이 나옴
+// [버튼 클릭] 커버 추가 / 이미지 수정하기 버튼 클릭 시 URL 입력창 표시
 if(btnHeaderImgToggle) {
   btnHeaderImgToggle.addEventListener('click', () => {
     btnHeaderImgToggle.style.display = 'none';
     coverUrlInputWrapper.style.display = 'flex';
+  });
+}
+
+// [적용 클릭] 주소 입력 후 적용 시 반투명 레이어와 "이미지 수정하기" 버튼 적용
+if(applyCoverUrlBtn) {
+  applyCoverUrlBtn.addEventListener('click', () => {
+    let url = inputHeaderImageUrl.value.trim();
+    if (typeof fixImageUrl === 'function') url = fixImageUrl(url); // 구글 드라이브 주소 자동 변환 함수 사용 시
+    
+    if (url) {
+      inputHeaderImageUrl.value = url;
+      headerImgPreview.src = url;
+      headerImgPreview.style.display = 'block';
+      
+      // 60% 반투명 레이어 활성화 및 버튼 문구 변경
+      if (headerImageContainer) headerImageContainer.classList.add('has-image');
+      btnHeaderImgToggle.textContent = '🖼 이미지 수정하기';
+      btnHeaderImgToggle.style.display = 'block';
+      coverUrlInputWrapper.style.display = 'none';
+    } else {
+      alert("이미지 주소를 입력해주세요.");
+    }
   });
 }
 
@@ -166,8 +218,13 @@ function resetUploadForm() {
     headerImgPreview.style.display = 'none';
     headerImgPreview.src = '';
   }
+  if(headerImageContainer) headerImageContainer.classList.remove('has-image');
   if(coverUrlInputWrapper) coverUrlInputWrapper.style.display = 'none';
-  if(btnHeaderImgToggle) btnHeaderImgToggle.style.display = 'block';
+  
+  if(btnHeaderImgToggle) {
+    btnHeaderImgToggle.textContent = '🖼 커버 추가 (URL 링크)';
+    btnHeaderImgToggle.style.display = 'block';
+  }
   
   categoryTags.forEach(tag => tag.classList.remove('selected'));
   document.getElementById("statusMsg").textContent = "";
@@ -280,7 +337,7 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   }
 });
 
-// 글 수정 버튼
+// 글 수정 버튼 클릭시
 document.getElementById("editProjectBtn").addEventListener("click", () => {
   if (!activeProjectData) return;
   if (activeProjectData.id.startsWith("demo-")) {
@@ -303,13 +360,18 @@ document.getElementById("editProjectBtn").addEventListener("click", () => {
     }
   });
 
+  // 이미지가 있을 때 60% 흰색 레이어 + "이미지 수정하기" 버튼 표시
   if (activeProjectData.img) {
-    btnHeaderImgToggle.style.display = 'none';
     headerImgPreview.src = activeProjectData.img;
     headerImgPreview.style.display = 'block';
-  } else {
+    if (headerImageContainer) headerImageContainer.classList.add('has-image');
+    btnHeaderImgToggle.textContent = '🖼 이미지 수정하기';
     btnHeaderImgToggle.style.display = 'block';
+  } else {
     headerImgPreview.style.display = 'none';
+    if (headerImageContainer) headerImageContainer.classList.remove('has-image');
+    btnHeaderImgToggle.textContent = '🖼 커버 추가 (URL 링크)';
+    btnHeaderImgToggle.style.display = 'block';
   }
 
   closeProjectModal();
