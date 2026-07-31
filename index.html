@@ -52,11 +52,16 @@
 
 <div class="modal-overlay-upload" id="modalOverlay">
   <div class="notion-modal">
-    <div class="notion-header-image-container" id="headerImageContainer">
-      <button class="notion-header-image-btn" id="btnHeaderImg" onclick="document.getElementById('inputHeaderImage').click()">🖼 커버 추가 (선택)</button>
-      <input type="file" id="inputHeaderImage" accept="image/*" style="display: none;">
-      <img id="headerImgPreview" class="notion-header-image-preview" src="" alt="헤더 이미지 미리보기">
-    </div>
+      <div class="notion-header-image-container" id="headerImageContainer">
+            <button class="notion-header-image-btn" id="btnHeaderImgToggle">🖼 커버 추가 (URL 링크)</button>
+            
+            <div class="url-input-wrapper" id="coverUrlInputWrapper">
+              <input type="text" id="inputHeaderImageUrl" placeholder="이미지 주소(URL)를 붙여넣으세요...">
+              <button id="applyCoverUrlBtn">적용</button>
+            </div>
+
+            <img id="headerImgPreview" class="notion-header-image-preview" src="" alt="헤더 이미지 미리보기">
+          </div>
 
     <div class="notion-modal-content-area">
       <input type="text" id="inputTitle" class="notion-title-input" placeholder="제목 없음">

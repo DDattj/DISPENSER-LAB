@@ -86,3 +86,33 @@ input[type="text"].notion-select { cursor: text; }
 
 .modal-body-content { line-height: 1.8; font-size: 16px; color: var(--ink); word-break: break-word; }
 .modal-body-content img { max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; display: block; }
+
+/* 커버 이미지 URL 입력창 스타일 */
+.url-input-wrapper {
+  position: absolute;
+  z-index: 15;
+  display: none; /* 평소에는 숨김 */
+  align-items: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border: 1px solid var(--line);
+  gap: 8px;
+}
+.url-input-wrapper input {
+  font-family: inherit;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 8px 12px;
+  width: 250px;
+  font-size: 13px;
+  outline: none;
+}
+.url-input-wrapper input:focus { border-color: #2383e2; }
+.url-input-wrapper button {
+  background: #2383e2; color: #fff; border: none; padding: 8px 14px;
+  border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600;
+}
+.url-input-wrapper button:hover { background: #1a6fca; }

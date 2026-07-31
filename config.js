@@ -21,36 +21,14 @@ try {
   console.warn("Firebase 에러", e);
 }
 
-// Quill 에디터 이미지 직접 업로드 핸들러
+// Quill 에디터 이미지 URL 직접 입력 핸들러 (스토리지 미사용)
 function imageHandler() {
-  const input = document.createElement('input');
-  input.setAttribute('type', 'file');
-  input.setAttribute('accept', 'image/*');
-  input.click();
-
-  input.onchange = async () => {
-    const file = input.files[0];
-    if (file) {
-      const globalLoader = document.getElementById("globalLoader");
-      const loaderText = globalLoader.querySelector('.loading-text');
-      loaderText.textContent = "에디터 이미지 업로드 중...";
-      globalLoader.classList.add("active");
-
-      try {
-        const fileRef = storage.ref().child(`quill_uploads/${Date.now()}_${file.name}`);
-        await fileRef.put(file);
-        const url = await fileRef.getDownloadURL();
-
-        const range = quill.getSelection();
-        quill.insertEmbed(range.index, 'image', url);
-      } catch (e) {
-        alert("이미지 첨부 실패: " + e.message);
-      } finally {
-        globalLoader.classList.remove("active");
-        loaderText.textContent = "안전하게 저장하는 중입니다..."; 
-      }
-    }
-  };
+  const url = prompt("이미지 링크(URL)를 붙여넣으세요:\n(GitHub Issues 등에 드래그 앤 드롭하여 얻은 주소)");
+  
+  if (url && url.trim().length > 0) {
+    const range = quill.getSelection();
+    quill.insertEmbed(range.index, 'image', url.trim());
+  }
 }
 
 // Quill 에디터 생성

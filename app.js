@@ -23,9 +23,9 @@ const modalProjectContent = document.getElementById('modalProjectContent');
 
 grid.addEventListener('click', (e) => {
   const card = e.target.closest('a[data-id]');
-  if (!card) return; 
+  if (!card) return;
   
-  e.preventDefault(); 
+  e.preventDefault();
   const pId = card.dataset.id;
   const p = projects.find(item => item.id === pId);
   if (!p) return;
@@ -41,7 +41,7 @@ grid.addEventListener('click', (e) => {
     modalProjectCover.style.display = 'none';
   }
 
-  modalProjectBadges.innerHTML = ''; 
+  modalProjectBadges.innerHTML = '';
   const cats = (p.cat || '').split(',').map(c => c.trim());
   cats.forEach(c => {
     if (c && c !== "카테고리 미지정") {
@@ -91,32 +91,68 @@ const fabBtn = document.getElementById("fabBtn");
 const modalOverlayUpload = document.getElementById("modalOverlay");
 const cancelBtn = document.getElementById("cancelBtn");
 
-fabBtn.addEventListener("click", () => { 
+fabBtn.addEventListener("click", () => {
   editingProjectId = null;
   resetUploadForm();
-  modalOverlayUpload.classList.add("open"); 
+  modalOverlayUpload.classList.add("open");
 });
 
-cancelBtn.addEventListener("click", () => { 
-  modalOverlayUpload.classList.remove("open"); 
-  document.getElementById("statusMsg").textContent = ""; 
+cancelBtn.addEventListener("click", () => {
+  modalOverlayUpload.classList.remove("open");
+  document.getElementById("statusMsg").textContent = "";
 });
 
 modalOverlayUpload.addEventListener("click", (e) => {
-  if (e.target === modalOverlayUpload) { 
-    modalOverlayUpload.classList.remove("open"); 
-    document.getElementById("statusMsg").textContent = ""; 
+  if (e.target === modalOverlayUpload) {
+    modalOverlayUpload.classList.remove("open");
+    document.getElementById("statusMsg").textContent = "";
   }
 });
 
+// ---- 커버 이미지 URL 입력 제어 로직 (스토리지 미사용) ----
+const btnHeaderImgToggle = document.getElementById('btnHeaderImgToggle');
+const coverUrlInputWrapper = document.getElementById('coverUrlInputWrapper');
+const applyCoverUrlBtn = document.getElementById('applyCoverUrlBtn');
+const inputHeaderImageUrl = document.getElementById('inputHeaderImageUrl');
+const headerImgPreview = document.getElementById('headerImgPreview');
+
+// [버튼 클릭] 커버 추가 버튼을 누르면 입력창이 나옴
+if(btnHeaderImgToggle) {
+  btnHeaderImgToggle.addEventListener('click', () => {
+    btnHeaderImgToggle.style.display = 'none';
+    coverUrlInputWrapper.style.display = 'flex';
+  });
+}
+
+// [적용 클릭] 주소를 넣고 적용을 누르면 썸네일 미리보기가 바뀜
+if(applyCoverUrlBtn) {
+  applyCoverUrlBtn.addEventListener('click', () => {
+    const url = inputHeaderImageUrl.value.trim();
+    if (url) {
+      headerImgPreview.src = url;
+      headerImgPreview.style.display = 'block';
+      coverUrlInputWrapper.style.display = 'none';
+    } else {
+      alert("이미지 주소를 입력해주세요.");
+    }
+  });
+}
+// --------------------------------------------------------
+
 function resetUploadForm() {
-  document.getElementById("inputHeaderImage").value = "";
   document.getElementById("inputTitle").value = "";
   document.getElementById("inputTime").value = "";
-  quill.root.innerHTML = ""; 
-  document.getElementById('headerImgPreview').style.display = 'none';
-  document.getElementById('headerImgPreview').src = '';
-  document.getElementById('btnHeaderImg').style.display = 'block';
+  if(typeof quill !== 'undefined') quill.root.innerHTML = "";
+  
+  // 커버 이미지 폼 상태 초기화
+  if(inputHeaderImageUrl) inputHeaderImageUrl.value = "";
+  if(headerImgPreview) {
+    headerImgPreview.style.display = 'none';
+    headerImgPreview.src = '';
+  }
+  if(coverUrlInputWrapper) coverUrlInputWrapper.style.display = 'none';
+  if(btnHeaderImgToggle) btnHeaderImgToggle.style.display = 'block';
+  
   categoryTags.forEach(tag => tag.classList.remove('selected'));
   document.getElementById("statusMsg").textContent = "";
 }
@@ -154,14 +190,14 @@ async function loadUserProjects() {
     projects.length = 0;
     snapshot.forEach(doc => {
       const d = doc.data();
-      projects.push({ 
-        id: doc.id, 
-        title: d.title, 
-        cat: d.cat, 
-        time: d.time, 
-        img: d.imageUrl || d.headerImageUrl, 
-        bodyText: d.bodyText || "", 
-        grad: null 
+      projects.push({
+        id: doc.id,
+        title: d.title,
+        cat: d.cat,
+        time: d.time,
+        img: d.imageUrl || d.headerImageUrl,
+        bodyText: d.bodyText || "",
+        grad: null
       });
     });
     render();
@@ -169,51 +205,34 @@ async function loadUserProjects() {
 }
 loadUserProjects();
 
-// 커버 이미지 미리보기
-document.getElementById('inputHeaderImage').addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      document.getElementById('btnHeaderImg').style.display = 'none';
-      const img = document.getElementById('headerImgPreview');
-      img.src = event.target.result;
-      img.style.display = 'block';
-    }
-    reader.readAsDataURL(file);
-  }
-});
-
-// 저장 (등록 & 수정 통합)
+// 저장 (등록 & 수정 통합) - 파이어베이스 스토리지를 거치지 않음!
 document.getElementById("saveBtn").addEventListener("click", async () => {
   const title = document.getElementById("inputTitle").value.trim();
   const time = document.getElementById("inputTime").value.trim() || "작업시간 미지정";
-  const bodyText = quill.root.innerHTML; 
+  const bodyText = quill.root.innerHTML;
   const statusMsg = document.getElementById("statusMsg");
   
   const selectedTags = Array.from(document.querySelectorAll('.tag-chip.selected')).map(tag => tag.dataset.value);
   const cat = selectedTags.length > 0 ? selectedTags.join(', ') : "카테고리 미지정";
-  const headerFile = document.getElementById('inputHeaderImage').files[0];
 
-  if (!title) { 
+  if (!title) {
     statusMsg.style.color = "red";
-    statusMsg.textContent = "프로젝트 제목을 입력해주세요!"; 
-    return; 
+    statusMsg.textContent = "프로젝트 제목을 입력해주세요!";
+    return;
   }
 
   const saveBtn = document.getElementById("saveBtn");
   const globalLoader = document.getElementById("globalLoader");
 
-  saveBtn.disabled = true; 
-  globalLoader.classList.add("active"); 
+  saveBtn.disabled = true;
+  globalLoader.classList.add("active");
 
   try {
     let imageUrl = activeProjectData ? (activeProjectData.img || "") : "";
     
-    if (headerFile) {
-      const headerRef = storage.ref().child(`uploads/${Date.now()}_header_${headerFile.name}`);
-      await headerRef.put(headerFile);
-      imageUrl = await headerRef.getDownloadURL();
+    // 화면에 보여지는 미리보기 이미지 주소(URL)를 그대로 DB에 텍스트로 저장
+    if (headerImgPreview && headerImgPreview.style.display === 'block' && headerImgPreview.src) {
+      imageUrl = headerImgPreview.src;
     }
     
     if (editingProjectId) {
@@ -225,8 +244,8 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
       await db.collection("projects").doc(editingProjectId).update(updateData);
       alert("글이 수정되었습니다.");
     } else {
-      await db.collection("projects").add({ 
-        title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+      await db.collection("projects").add({
+        title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       alert("새 글이 저장되었습니다.");
     }
@@ -236,11 +255,11 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
     await loadUserProjects();
     resetUploadForm();
 
-  } catch (e) { 
+  } catch (e) {
     statusMsg.style.color = "red";
-    statusMsg.textContent = "저장 실패: " + e.message; 
-  } finally { 
-    saveBtn.disabled = false; 
+    statusMsg.textContent = "저장 실패: " + e.message;
+  } finally {
+    saveBtn.disabled = false;
     globalLoader.classList.remove("active");
   }
 });
@@ -269,13 +288,12 @@ document.getElementById("editProjectBtn").addEventListener("click", () => {
   });
 
   if (activeProjectData.img) {
-    document.getElementById('btnHeaderImg').style.display = 'none';
-    const img = document.getElementById('headerImgPreview');
-    img.src = activeProjectData.img;
-    img.style.display = 'block';
+    btnHeaderImgToggle.style.display = 'none';
+    headerImgPreview.src = activeProjectData.img;
+    headerImgPreview.style.display = 'block';
   } else {
-    document.getElementById('btnHeaderImg').style.display = 'block';
-    document.getElementById('headerImgPreview').style.display = 'none';
+    btnHeaderImgToggle.style.display = 'block';
+    headerImgPreview.style.display = 'none';
   }
 
   closeProjectModal();
@@ -307,42 +325,30 @@ document.getElementById("deleteProjectBtn").addEventListener("click", async () =
   }
 });
 
-// 썸네일 개별 변경
+// 썸네일 개별 변경 (스토리지 없이 URL 입력 프롬프트로 완벽 대체!)
 function openThumbUploader(projectId) {
   if(!projectId || projectId.startsWith("demo-")) {
       alert("이 항목은 더미 데이터라 썸네일을 변경할 수 없습니다.");
       return;
   }
   
-  const fileInput = document.createElement('input');
-  fileInput.type = 'file';
-  fileInput.accept = 'image/*';
+  const newThumbUrl = prompt("변경할 썸네일 이미지 링크(URL)를 붙여넣으세요:\n(GitHub Issues 등에 드래그 앤 드롭하여 얻은 주소)");
   
-  fileInput.onchange = async (e) => {
-      const file = e.target.files[0];
-      if(!file) return;
-      
+  if(newThumbUrl && newThumbUrl.trim().length > 0) {
       const globalLoader = document.getElementById("globalLoader");
       globalLoader.classList.add("active");
       
-      try {
-          const thumbRef = storage.ref().child(`uploads/${Date.now()}_thumb_${file.name}`);
-          await thumbRef.put(file);
-          const newThumbUrl = await thumbRef.getDownloadURL();
-          
-          await db.collection("projects").doc(projectId).update({
-              imageUrl: newThumbUrl,
-              headerImageUrl: newThumbUrl
-          });
-          
-          await loadUserProjects(); 
-      } catch(err) {
+      // 스토리지 업로드 없이 DB에 주소(텍스트)만 바로 업데이트
+      db.collection("projects").doc(projectId).update({
+          imageUrl: newThumbUrl.trim(),
+          headerImageUrl: newThumbUrl.trim()
+      }).then(() => {
+          loadUserProjects();
+      }).catch(err => {
           console.error(err);
           alert("썸네일 변경 중 오류가 발생했습니다.");
-      } finally {
+      }).finally(() => {
           globalLoader.classList.remove("active");
-      }
-  };
-  
-  fileInput.click();
+      });
+  }
 }
