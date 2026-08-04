@@ -1,6 +1,13 @@
 let editingProjectId = null;
 let activeProjectData = null;
 
+// 커버 이미지 위치(X, Y %) 기본값
+let coverPosX = 50;
+let coverPosY = 50;
+let isDragging = false;
+let startX = 0, startY = 0;
+let initialPosX = 50, initialPosY = 50;
+
 // 초기 화면 렌더링
 render();
 
@@ -33,19 +40,14 @@ grid.addEventListener('click', (e) => {
   activeProjectData = p;
   modalProjectTitle.textContent = p.title;
   
-  // [수정 1] 구글 드라이브 주소 강제 변환
-  let finalImgUrl = p.img || "";
-  if (finalImgUrl.includes('drive.google.com')) {
-    const match = finalImgUrl.match(/\/d\/([a-zA-Z0-9_-]+)/) || finalImgUrl.match(/id=([a-zA-Z0-9_-]+)/);
-    if (match && match[1]) {
-      finalImgUrl = `https://lh3.googleusercontent.com/d/$$${match[1]}`;
-    }
-  }
+  let finalImgUrl = p.headerImg || "";
+  if (typeof fixImageUrl === 'function') finalImgUrl = fixImageUrl(finalImgUrl);
 
-  // [수정 2] 커버 이미지 배너 레이아웃 표시 제어
   const modalCoverContainer = document.getElementById('modalCoverContainer');
   if (finalImgUrl) {
     modalProjectCover.src = finalImgUrl;
+    // 저장된 위치 좌표(예: "50% 30%") 적용
+    modalProjectCover.style.objectPosition = p.coverPos || "50% 50%";
     modalProjectCover.style.display = 'block';
     if (modalCoverContainer) modalCoverContainer.style.display = 'block';
   } else {
@@ -91,7 +93,7 @@ projectModal.addEventListener('click', (e) => {
   if (e.target === projectModal) closeProjectModal();
 });
 
-// 카테고리 다중 선택 태그 칩
+// 카테고리 태그 칩
 const categoryTags = document.querySelectorAll('.tag-chip');
 categoryTags.forEach(tag => {
   tag.addEventListener('click', () => {
@@ -121,21 +123,27 @@ modalOverlayUpload.addEventListener("click", (e) => {
   }
 });
 
-// ---- 커버 이미지 URL 입력 제어 로직 ----
+// ---- 커버 이미지 URL & 마우스 위치 드래그(Reposition) 로직 ----
 const headerImageContainer = document.getElementById('headerImageContainer');
 const btnHeaderImgToggle = document.getElementById('btnHeaderImgToggle');
+const btnRepositionCover = document.getElementById('btnRepositionCover');
+const repositionGuideBar = document.getElementById('repositionGuideBar');
+const btnSaveCoverPos = document.getElementById('btnSaveCoverPos');
 const coverUrlInputWrapper = document.getElementById('coverUrlInputWrapper');
 const applyCoverUrlBtn = document.getElementById('applyCoverUrlBtn');
 const inputHeaderImageUrl = document.getElementById('inputHeaderImageUrl');
 const headerImgPreview = document.getElementById('headerImgPreview');
+const coverBtnGroup = document.getElementById('coverBtnGroup');
 
+// 1. 이미지 추가/수정 버튼 클릭
 if(btnHeaderImgToggle) {
   btnHeaderImgToggle.addEventListener('click', () => {
-    btnHeaderImgToggle.style.display = 'none';
+    coverBtnGroup.style.display = 'none';
     coverUrlInputWrapper.style.display = 'flex';
   });
 }
 
+// 2. 주소 적용 클릭
 if(applyCoverUrlBtn) {
   applyCoverUrlBtn.addEventListener('click', () => {
     let url = inputHeaderImageUrl.value.trim();
@@ -146,9 +154,14 @@ if(applyCoverUrlBtn) {
       headerImgPreview.src = url;
       headerImgPreview.style.display = 'block';
       
+      // 위치 초기화
+      coverPosX = 50; coverPosY = 50;
+      headerImgPreview.style.objectPosition = '50% 50%';
+
       if (headerImageContainer) headerImageContainer.classList.add('has-image');
       btnHeaderImgToggle.textContent = '🖼 이미지 수정하기';
-      btnHeaderImgToggle.style.display = 'block';
+      btnRepositionCover.style.display = 'inline-block';
+      coverBtnGroup.style.display = 'flex';
       coverUrlInputWrapper.style.display = 'none';
     } else {
       alert("이미지 주소를 입력해주세요.");
@@ -156,12 +169,79 @@ if(applyCoverUrlBtn) {
   });
 }
 
+// 3. 위치 조정 드래그 모드 시작
+if(btnRepositionCover) {
+  btnRepositionCover.addEventListener('click', () => {
+    coverBtnGroup.style.display = 'none';
+    repositionGuideBar.style.display = 'flex';
+    headerImageContainer.classList.add('repositioning');
+  });
+}
+
+// 4. 위치 저장 클릭
+if(btnSaveCoverPos) {
+  btnSaveCoverPos.addEventListener('click', () => {
+    repositionGuideBar.style.display = 'none';
+    coverBtnGroup.style.display = 'flex';
+    headerImageContainer.classList.remove('repositioning');
+  });
+}
+
+// ---- 마우스 / 터치 드래그 이벤트 (상하좌우 위치 이동) ----
+function startDrag(e) {
+  if (!headerImageContainer.classList.contains('repositioning')) return;
+  isDragging = true;
+  const pageX = e.touches ? e.touches[0].pageX : e.pageX;
+  const pageY = e.touches ? e.touches[0].pageY : e.pageY;
+  
+  startX = pageX;
+  startY = pageY;
+  initialPosX = coverPosX;
+  initialPosY = coverPosY;
+}
+
+function doDrag(e) {
+  if (!isDragging) return;
+  e.preventDefault();
+  
+  const pageX = e.touches ? e.touches[0].pageX : e.pageX;
+  const pageY = e.touches ? e.touches[0].pageY : e.pageY;
+  
+  const rect = headerImageContainer.getBoundingClientRect();
+  const deltaX = pageX - startX;
+  const deltaY = pageY - startY;
+
+  // 마우스 이동 거리를 비율(%)로 환산 (가로/세로 이동을 반영)
+  let percentX = initialPosX - (deltaX / rect.width) * 100;
+  let percentY = initialPosY - (deltaY / rect.height) * 100;
+
+  // 0% ~ 100% 한계범위 설정
+  coverPosX = Math.max(0, Math.min(100, percentX));
+  coverPosY = Math.max(0, Math.min(100, percentY));
+
+  headerImgPreview.style.objectPosition = `${coverPosX}% ${coverPosY}%`;
+}
+
+function stopDrag() {
+  isDragging = false;
+}
+
+if(headerImageContainer) {
+  headerImageContainer.addEventListener('mousedown', startDrag);
+  window.addEventListener('mousemove', doDrag);
+  window.addEventListener('mouseup', stopDrag);
+
+  headerImageContainer.addEventListener('touchstart', startDrag, {passive: false});
+  window.addEventListener('touchmove', doDrag, {passive: false});
+  window.addEventListener('touchend', stopDrag);
+}
+
 function fixImageUrl(url) {
   if (!url) return "";
   if (url.includes('drive.google.com')) {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/$${match[1]}`;
+      return `https://lh3.googleusercontent.com/d/$$${match[1]}`;
     }
   }
   return url;
@@ -176,20 +256,26 @@ function resetUploadForm() {
   if(headerImgPreview) {
     headerImgPreview.style.display = 'none';
     headerImgPreview.src = '';
+    headerImgPreview.style.objectPosition = '50% 50%';
   }
-  if(headerImageContainer) headerImageContainer.classList.remove('has-image');
+  coverPosX = 50; coverPosY = 50;
+
+  if(headerImageContainer) {
+    headerImageContainer.classList.remove('has-image');
+    headerImageContainer.classList.remove('repositioning');
+  }
   if(coverUrlInputWrapper) coverUrlInputWrapper.style.display = 'none';
+  if(repositionGuideBar) repositionGuideBar.style.display = 'none';
   
-  if(btnHeaderImgToggle) {
-    btnHeaderImgToggle.textContent = '🖼 커버 추가 (URL 링크)';
-    btnHeaderImgToggle.style.display = 'block';
-  }
+  if(btnHeaderImgToggle) btnHeaderImgToggle.textContent = '🖼 커버 추가 (URL 링크)';
+  if(btnRepositionCover) btnRepositionCover.style.display = 'none';
+  if(coverBtnGroup) coverBtnGroup.style.display = 'flex';
   
   categoryTags.forEach(tag => tag.classList.remove('selected'));
   document.getElementById("statusMsg").textContent = "";
 }
 
-// 로그인 & 관리자 권한
+// 로그인 및 관리자 설정
 const loginLink = document.getElementById("loginLink");
 const logoutLink = document.getElementById("logoutLink");
 
@@ -228,6 +314,8 @@ async function loadUserProjects() {
         cat: d.cat,
         time: d.time,
         img: d.imageUrl || d.headerImageUrl,
+        headerImg: d.headerImageUrl || d.imageUrl,
+        coverPos: d.coverPos || "50% 50%", // 위치 좌표 불러오기
         bodyText: d.bodyText || "",
         grad: null
       });
@@ -260,23 +348,27 @@ document.getElementById("saveBtn").addEventListener("click", async () => {
   globalLoader.classList.add("active");
 
   try {
-    let imageUrl = activeProjectData ? (activeProjectData.img || "") : "";
-    
+    let currentHeaderUrl = "";
     if (headerImgPreview && headerImgPreview.style.display === 'block' && headerImgPreview.src) {
-      imageUrl = headerImgPreview.src;
+      currentHeaderUrl = headerImgPreview.src;
     }
     
+    const currentCoverPos = `${Math.round(coverPosX)}% ${Math.round(coverPosY)}%`;
+
     if (editingProjectId) {
-      const updateData = { title, cat, time, bodyText };
-      if (imageUrl) {
-        updateData.imageUrl = imageUrl;
-        updateData.headerImageUrl = imageUrl;
+      const updateData = { title, cat, time, bodyText, coverPos: currentCoverPos };
+      if (currentHeaderUrl) {
+        updateData.headerImageUrl = currentHeaderUrl;
       }
       await db.collection("projects").doc(editingProjectId).update(updateData);
       alert("글이 수정되었습니다.");
     } else {
       await db.collection("projects").add({
-        title, cat, time, imageUrl, headerImageUrl: imageUrl, bodyText, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        title, cat, time, bodyText,
+        imageUrl: currentHeaderUrl,
+        headerImageUrl: currentHeaderUrl,
+        coverPos: currentCoverPos,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
       alert("새 글이 저장되었습니다.");
     }
@@ -318,17 +410,28 @@ document.getElementById("editProjectBtn").addEventListener("click", () => {
     }
   });
 
-  if (activeProjectData.img) {
-    headerImgPreview.src = activeProjectData.img;
+  let imgUrl = activeProjectData.headerImg || "";
+  if (typeof fixImageUrl === 'function') imgUrl = fixImageUrl(imgUrl);
+
+  if (imgUrl) {
+    headerImgPreview.src = imgUrl;
     headerImgPreview.style.display = 'block';
+    
+    // 기존에 저장되어 있던 위치 값 파싱
+    const posParts = (activeProjectData.coverPos || "50% 50%").split(" ");
+    coverPosX = parseFloat(posParts[0]) || 50;
+    coverPosY = parseFloat(posParts[1]) || 50;
+    headerImgPreview.style.objectPosition = `${coverPosX}% ${coverPosY}%`;
+
+    if (inputHeaderImageUrl) inputHeaderImageUrl.value = imgUrl;
     if (headerImageContainer) headerImageContainer.classList.add('has-image');
     btnHeaderImgToggle.textContent = '🖼 이미지 수정하기';
-    btnHeaderImgToggle.style.display = 'block';
+    btnRepositionCover.style.display = 'inline-block';
   } else {
     headerImgPreview.style.display = 'none';
     if (headerImageContainer) headerImageContainer.classList.remove('has-image');
     btnHeaderImgToggle.textContent = '🖼 커버 추가 (URL 링크)';
-    btnHeaderImgToggle.style.display = 'block';
+    btnRepositionCover.style.display = 'none';
   }
 
   closeProjectModal();
@@ -375,8 +478,7 @@ function openThumbUploader(projectId) {
       globalLoader.classList.add("active");
       
       db.collection("projects").doc(projectId).update({
-          imageUrl: newThumbUrl,
-          headerImageUrl: newThumbUrl
+          imageUrl: newThumbUrl
       }).then(() => {
           loadUserProjects();
       }).catch(err => {

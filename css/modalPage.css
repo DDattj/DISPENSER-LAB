@@ -157,3 +157,53 @@ input[type="text"].notion-select { cursor: text; }
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
+/* 커버 버튼 그룹 */
+.cover-btn-group {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+/* 위치 조정 모드 안내 바 */
+.reposition-guide-bar {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: none;
+  align-items: center;
+  gap: 12px;
+  background: rgba(35, 35, 35, 0.85);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.reposition-guide-bar button {
+  background: #2383e2;
+  color: white;
+  border: none;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.reposition-guide-bar button:hover { background: #1a6fca; }
+
+/* 드래그 상태 커서 */
+.notion-header-image-container.repositioning {
+  cursor: grab !important;
+}
+.notion-header-image-container.repositioning:active {
+  cursor: grabbing !important;
+}
+.notion-header-image-container.repositioning .notion-header-image-preview {
+  pointer-events: none; /* 드래그 이벤트가 부모 컨테이너에 걸리도록 설정 */
+  user-select: none;
+}
