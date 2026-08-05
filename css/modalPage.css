@@ -203,6 +203,12 @@ input[type="text"].notion-select { cursor: text; }
 .notion-header-image-container.repositioning:active {
   cursor: grabbing !important;
 }
+
+/* 위치 조정(드래그) 중일 때는 60% 반투명 레이어 임시 숨김 */
+.notion-header-image-container.repositioning::after {
+  display: none;
+}
+
 .notion-header-image-container.repositioning .notion-header-image-preview {
   pointer-events: none; /* 드래그 이벤트가 부모 컨테이너에 걸리도록 설정 */
   user-select: none;

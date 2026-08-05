@@ -190,6 +190,7 @@ if(btnSaveCoverPos) {
 // ---- 마우스 / 터치 드래그 이벤트 (상하좌우 위치 이동) ----
 function startDrag(e) {
   if (!headerImageContainer.classList.contains('repositioning')) return;
+  e.preventDefault(); // 브라우저 기본 이미지 드래그 현상 강제 차단 (핵심!)
   isDragging = true;
   const pageX = e.touches ? e.touches[0].pageX : e.pageX;
   const pageY = e.touches ? e.touches[0].pageY : e.pageY;
@@ -236,12 +237,13 @@ if(headerImageContainer) {
   window.addEventListener('touchend', stopDrag);
 }
 
+// 구글 드라이브 주소 자동 변환 함수
 function fixImageUrl(url) {
   if (!url) return "";
   if (url.includes('drive.google.com')) {
     const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
     if (match && match[1]) {
-      return `https://lh3.googleusercontent.com/d/$$${match[1]}`;
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
     }
   }
   return url;

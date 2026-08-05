@@ -31,6 +31,18 @@ function imageHandler() {
   }
 }
 
+// 구글 드라이브 주소 자동 변환 함수
+function fixImageUrl(url) {
+  if (!url) return "";
+  if (url.includes('drive.google.com')) {
+    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+    }
+  }
+  return url;
+}
+
 // Quill 에디터 생성
 var quill = new Quill('#editor-container', {
   theme: 'snow',
